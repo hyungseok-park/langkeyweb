@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangKey — Type in the Right Language. Every Time.</title>
+<meta name="description" content="LangKey maps modifier keys to input languages. No more wrong-language typing. Up to 4 languages, each with its own dedicated key.">
+<style>
+:root {
+  --bg: #07070f;
+  --bg2: #0d0d1a;
+  --bg3: #121220;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #7c6dfa;
+  --accent2: #9d91fb;
+  --orange: #ff6b35;
+  --green: #3ecf8e;
+  --red: #ff4757;
+  --text: #f0f0ff;
+  --text2: #9090b8;
+  --text3: #5a5a80;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,7,15,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #7c6dfa, #5a4fcf);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 20px rgba(124,109,250,0.35);
+}
+
+.nav-spacer { flex: 1; }
+
+/* Language switcher */
+.lang-switcher {
+  position: relative;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.lang-btn:hover { border-color: var(--accent); color: var(--text); }
+
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 140px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  z-index: 200;
+}
+.lang-dropdown.open { display: block; }
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text2);
+  transition: background 0.1s;
+}
+.lang-option:hover { background: var(--bg3); color: var(--text); }
+.lang-option.active { color: var(--accent2); background: rgba(124,109,250,0.08); }
+
+.nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  background: var(--accent);
+  border: none;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 0 20px rgba(124,109,250,0.3);
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--accent2); box-shadow: 0 0 28px rgba(124,109,250,0.5); transform: translateY(-1px); }
+.nav-coming-soon {
+  padding: 6px 14px;
+  background: rgba(124,109,250,0.12);
+  border: 1px solid rgba(124,109,250,0.3);
+  border-radius: 99px;
+  color: var(--accent2);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 96px 0 80px;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-60%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(124,109,250,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.hero-text { max-width: 520px; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 8px;
+  background: rgba(124,109,250,0.12);
+  border: 1px solid rgba(124,109,250,0.25);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent2);
+  letter-spacing: 0.3px;
+  text-transform: none;
+  margin-bottom: 20px;
+}
+
+.hero-eyebrow-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+h1 {
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, #a89eff, #7c6dfa, #5a4fcf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: var(--accent);
+  border: none;
+  border-radius: 11px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 0 30px rgba(124,109,250,0.4);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: var(--accent2); box-shadow: 0 0 40px rgba(124,109,250,0.55); transform: translateY(-2px); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 11px;
+  color: var(--text2);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+.hero-badge {
+  font-size: 12px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-badge span { color: var(--text2); }
+
+/* ── MENUBAR MOCKUP ── */
+.hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.menubar-glow {
+  position: absolute;
+  inset: -60px;
+  background: radial-gradient(ellipse at 60% 40%, rgba(124,109,250,0.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.mockup-wrapper {
+  position: relative;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* macOS menu bar strip */
+.mac-menubar {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 10px 10px 0 0;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-bottom: none;
+}
+.menubar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.menubar-apple {
+  font-size: 15px;
+  opacity: 0.85;
+  line-height: 1;
+}
+.menubar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.menubar-time {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: 0.01em;
+}
+.menubar-sys-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  opacity: 0.45;
+}
+
+.mac-menubar-icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(124,109,250,0.3);
+  border: 1px solid rgba(124,109,250,0.4);
+  font-size: 13px;
+}
+
+/* LangKey popup */
+.langkey-popup {
+  width: 320px;
+  background: rgba(18,18,32,0.97);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,109,250,0.1);
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.popup-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.popup-current {
+  font-size: 12px;
+  color: var(--text2);
+  background: rgba(255,255,255,0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.popup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.mapping-cell {
+  background: var(--bg2);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cell-key {
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.cell-lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.cell-lang-name {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.popup-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.popup-footer-btn {
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.popup-footer-btn:hover { color: var(--accent2); }
+
+/* Overlay badge (floating above popup) */
+.overlay-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 20px 40px;
+  text-align: center;
+  font-size: 52px;
+  line-height: 1.1;
+  pointer-events: none;
+  animation: overlayAnim 4s ease-in-out infinite 2s;
+  opacity: 0;
+}
+
+.overlay-badge-name {
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+@keyframes overlayAnim {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+  10%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  55%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  70%  { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+}
+
+/* ── SECTION STYLES ── */
+section { padding: 96px 0; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--text2);
+  max-width: 520px;
+  line-height: 1.65;
+  margin-bottom: 56px;
+}
+
+/* ── PROBLEM SECTION ── */
+.problem-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.problem-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.demo-panel {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.demo-panel-header {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.demo-panel.error .demo-panel-header { color: var(--red); background: rgba(255,71,87,0.06); }
+.demo-panel.success .demo-panel-header { color: var(--green); background: rgba(62,207,142,0.06); }
+
+.demo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.error .demo-dot { background: var(--red); }
+.success .demo-dot { background: var(--green); }
+
+.demo-body {
+  padding: 28px 24px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+}
+
+.demo-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.demo-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.demo-text-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.demo-text {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  letter-spacing: 1px;
+  min-height: 1.4em;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.demo-text.wrong { color: var(--red); }
+.demo-text.right { color: var(--green); }
+.demo-text.muted { color: var(--text3); }
+
+.demo-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: currentColor;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+@keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+
+.squiggle {
+  display: none;
+  width: 100%;
+  height: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='4'%3E%3Cpath d='M0 2 Q2.5 0 5 2 Q7.5 4 10 2' fill='none' stroke='%23ff4757' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  margin-top: 2px;
+}
+
+/* Key tap indicator */
+.key-tap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+}
+
+.key-cap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-bottom: 3px solid var(--border2);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+
+.key-cap.active {
+  background: rgba(124,109,250,0.15);
+  border-color: var(--accent);
+  color: var(--accent2);
+  border-bottom-width: 1px;
+  transform: translateY(2px);
+  box-shadow: 0 0 12px rgba(124,109,250,0.3);
+}
+
+.lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  font-size: 15px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+.lang-badge.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+.lang-badge-name { font-size: 13px; font-weight: 600; color: #fff; }
+
+.check-icon {
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.check-icon.visible { opacity: 1; }
+
+.toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text3);
+  height: 18px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+.toggle-chip.visible { opacity: 1; }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.feature-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card:hover { border-color: rgba(124,109,250,0.25); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+
+.feature-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(124,109,250,0.12);
+  border: 1px solid rgba(124,109,250,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.feature-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: calc(16.66% + 20px);
+  right: calc(16.66% + 20px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent 45%, transparent 55%, var(--accent));
+  border-top: 1px dashed var(--border2);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(124,109,250,0.3), rgba(90,79,207,0.2));
+  border: 1px solid rgba(124,109,250,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.step-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+/* Step visuals */
+.step-visual {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 4px;
+}
+
+.mini-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: var(--bg2);
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.mini-key { color: var(--text3); font-weight: 600; }
+.mini-lang { color: var(--text2); }
+
+.mini-tap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--bg2);
+  border-radius: 8px;
+}
+
+.mini-key-cap {
+  padding: 4px 10px;
+  background: rgba(124,109,250,0.15);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent2);
+}
+
+.mini-arrow { color: var(--text3); font-size: 14px; }
+
+.mini-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 10px;
+  font-size: 18px;
+  width: 100%;
+  justify-content: center;
+}
+.mini-badge-name { font-size: 12px; font-weight: 600; color: #fff; }
+
+.mini-text {
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green);
+  padding: 8px;
+  letter-spacing: 1px;
+}
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.price-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.price-card.featured {
+  border-color: rgba(124,109,250,0.4);
+  background: linear-gradient(135deg, rgba(124,109,250,0.08), rgba(90,79,207,0.04));
+  box-shadow: 0 0 40px rgba(124,109,250,0.1);
+  position: relative;
+}
+
+.price-badge {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--accent), #9d91fb);
+  padding: 3px 14px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.price-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.price-sub {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 24px;
+}
+
+.price-amount {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -1px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.price-amount sup {
+  font-size: 22px;
+  font-weight: 700;
+  vertical-align: top;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.price-period {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 24px;
+}
+
+.price-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex: 1;
+}
+
+.price-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.price-features li::before {
+  content: '✓';
+  width: 18px;
+  height: 18px;
+  background: rgba(62,207,142,0.12);
+  border: 1px solid rgba(62,207,142,0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.price-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  border: none;
+}
+
+.price-card .price-cta {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+}
+.price-card .price-cta:hover { border-color: var(--accent); color: var(--accent2); }
+
+.price-card.featured .price-cta {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(124,109,250,0.35);
+}
+.price-card.featured .price-cta:hover { background: var(--accent2); box-shadow: 0 0 30px rgba(124,109,250,0.5); transform: translateY(-1px); }
+
+.price-note {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.7;
+}
+
+/* ── COMING SOON ── */
+#coming-soon {
+  padding: 100px 0;
+}
+.coming-soon-card {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 56px 48px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 0 60px rgba(124,109,250,0.08);
+}
+.coming-soon-card h2 {
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.coming-soon-card p {
+  font-size: 16px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.coming-soon-dot-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.coming-soon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.4;
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+.coming-soon-dot:nth-child(2) { animation-delay: 0.25s; }
+.coming-soon-dot:nth-child(3) { animation-delay: 0.5s; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-tagline {
+  font-size: 13px;
+  color: var(--text3);
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { order: -1; }
+  .langkey-popup { width: 280px; }
+  .problem-demo { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .steps::before { display: none; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  section { padding: 64px 0; }
+  .hero { padding: 60px 0 48px; }
+}
+
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn-primary, .btn-ghost { justify-content: center; }
+  .nav-inner { padding: 12px 16px; }
+}
+
+/* ── FADE IN ANIMATION ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">⌨️</div>
+      LangKey
+    </a>
+    <div class="nav-spacer"></div>
+    <div class="lang-switcher">
+      <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">
+        <span id="currentLangFlag">🇺🇸</span>
+        <span id="currentLangCode">EN</span>
+        <span style="font-size:10px;margin-left:2px;color:var(--text3)">▾</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option" data-lang="en" onclick="setLang('en')">🇺🇸 EN</div>
+        <div class="lang-option" data-lang="ko" onclick="setLang('ko')">🇰🇷 한국어</div>
+        <div class="lang-option" data-lang="ja" onclick="setLang('ja')">🇯🇵 日本語</div>
+        <div class="lang-option" data-lang="zh-hans" onclick="setLang('zh-hans')">🇨🇳 简体</div>
+        <div class="lang-option" data-lang="zh-hant" onclick="setLang('zh-hant')">🇨🇳 繁體</div>
+      </div>
+    </div>
+    <div class="nav-coming-soon" data-i18n="nav_coming_soon">Coming Soon</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text fade-up">
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot"></span>
+          macOS MENU BAR APP
+        </div>
+        <h1 data-i18n="hero_headline">Type in the Right Language.<br><em>Every Time.</em></h1>
+        <p class="hero-sub" data-i18n="hero_sub">LangKey gives each modifier key its own language — no more toggling, no more wrong-language mistakes.</p>
+        <div class="hero-actions">
+          <a href="#problem" class="btn-primary">
+            <span data-i18n="hero_cta2">See How It Works</span>
+            <span>→</span>
+          </a>
+        </div>
+        <div class="hero-badge">
+          <span style="font-size:15px;line-height:1;opacity:0.85;">&#xF8FF;</span>
+          <span data-i18n="hero_badge">macOS 14+ · Coming Soon</span>
+        </div>
+      </div>
+
+      <div class="hero-visual fade-up" style="transition-delay:0.15s">
+        <div class="menubar-glow"></div>
+        <div class="mockup-wrapper">
+          <div class="mac-menubar">
+            <div class="menubar-left">
+              <span class="menubar-apple">&#xF8FF;</span>
+            </div>
+            <div class="menubar-right">
+              <div class="mac-menubar-icon" id="mockupMenubarIcon">🇰🇷 ⌨️</div>
+              <div class="menubar-sys-icons">
+                <span>📶</span>
+                <span>🔋</span>
+              </div>
+              <span class="menubar-time" id="mockupClock">9:41 AM</span>
+            </div>
+          </div>
+          <div class="langkey-popup">
+            <div class="popup-header">
+              <div class="popup-title">
+                <span>⌨️</span>
+                <span>LangKey</span>
+              </div>
+              <div class="popup-current" id="mockupCurrent">🇰🇷 한국어</div>
+            </div>
+            <div class="popup-grid">
+              <div class="mapping-cell">
+                <div class="cell-key">Left ⇧</div>
+                <div class="cell-lang">
+                  <span>🇺🇸</span>
+                  <div>
+                    <div>English</div>
+                    <div class="cell-lang-name">ABC</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mapping-cell" style="background:rgba(124,109,250,0.07);border-left:2px solid rgba(124,109,250,0.4)">
+                <div class="cell-key" style="color:var(--accent2)">Right ⇧ ●</div>
+                <div class="cell-lang">
+                  <span id="mockupRSFlag">🇰🇷</span>
+                  <div>
+                    <div id="mockupRSName">한국어</div>
+                    <div class="cell-lang-name" id="mockupRSSub">두벌식</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mapping-cell">
+                <div class="cell-key">Left ⌃</div>
+                <div class="cell-lang">
+                  <span id="mockupLCFlag">🇯🇵</span>
+                  <div>
+                    <div id="mockupLCName">日本語</div>
+                    <div class="cell-lang-name" id="mockupLCSub">ローマ字</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mapping-cell">
+                <div class="cell-key">Right ⌃</div>
+                <div class="cell-lang">
+                  <span id="mockupRCFlag">🇨🇳</span>
+                  <div>
+                    <div id="mockupRCName">中文</div>
+                    <div class="cell-lang-name" id="mockupRCSub">拼音</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="popup-footer">
+              <span class="popup-footer-btn" id="mockupAddLang">Add Language...</span>
+              <span class="popup-footer-btn" id="mockupQuit">Quit LangKey</span>
+            </div>
+          </div>
+
+          <!-- floating overlay preview -->
+          <div class="overlay-badge" id="overlayPreview">
+            <div id="mockupOverlayFlag">🇰🇷</div>
+            <div class="overlay-badge-name" id="mockupOverlayName">한국어</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM DEMO -->
+<section id="problem" class="problem-section">
+  <div class="container">
+    <div class="section-label" data-i18n="prob_label">The Problem</div>
+    <h2 data-i18n="prob_headline">Sound familiar?</h2>
+    <p class="section-sub" data-i18n="prob_toggle">With 3+ languages, toggling is a gamble — you never know where you'll land.</p>
+
+    <div class="problem-demo">
+      <!-- WITHOUT -->
+      <div class="demo-panel error fade-up">
+        <div class="demo-panel-header">
+          <div class="demo-dot"></div>
+          <span data-i18n="prob_without">Without LangKey</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-row">
+            <div class="demo-label" data-i18n="prob_intended">Intended:</div>
+            <div class="demo-text muted"><span id="demoIntendedWord">나는</span></div>
+          </div>
+          <div class="demo-row">
+            <div class="demo-label" data-i18n="prob_typed">What happens:</div>
+            <div>
+              <div class="demo-text-wrap">
+                <div class="demo-text wrong" id="wrongText">
+                  <span id="wrongChars"></span><span class="demo-cursor" id="wrongCursor" style="color:var(--red)"></span>
+                </div>
+                <div class="squiggle" id="squiggle"></div>
+              </div>
+              <div class="toggle-chip" id="toggleChip">↻ <span data-i18n="prob_switching">switching language...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WITH -->
+      <div class="demo-panel success fade-up" style="transition-delay:0.1s">
+        <div class="demo-panel-header">
+          <div class="demo-dot"></div>
+          <span data-i18n="prob_with">With LangKey</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-row">
+            <div class="key-tap">
+              <div class="key-cap" id="keyCap">Right ⇧</div>
+              <span style="color:var(--text3)">→</span>
+              <div class="lang-badge" id="langBadge">
+                <span id="demoBadgeFlag">🇰🇷</span>
+                <span class="lang-badge-name" id="demoBadgeName">한국어</span>
+              </div>
+            </div>
+          </div>
+          <div class="demo-row">
+            <div class="demo-label" data-i18n="prob_intended">Result:</div>
+            <div class="demo-text right">
+              <span id="rightChars"></span><span class="demo-cursor" id="rightCursor" style="color:var(--green)"></span>
+              <span class="check-icon" id="checkIcon">✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2 data-i18n="feat_headline">One Key. One Language. Always.</h2>
+
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title" data-i18n="feat1_title">Up to 4 Languages</div>
+        <div class="feature-desc" data-i18n="feat1_desc">Map Left ⇧, Right ⇧, Left ⌃, and Right ⌃ to any 4 input sources.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.05s">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title" data-i18n="feat2_title">No More Toggling</div>
+        <div class="feature-desc" data-i18n="feat2_desc">Each key is dedicated. Tap Right ⇧ — it's always Korean. No guessing, no surprises.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.1s">
+        <div class="feature-icon">👁</div>
+        <div class="feature-title" data-i18n="feat3_title">Instant Visual Feedback</div>
+        <div class="feature-desc" data-i18n="feat3_desc">A brief overlay shows the flag and language name every time you switch. You always know where you are.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.15s">
+        <div class="feature-icon">⌨️</div>
+        <div class="feature-title" data-i18n="feat4_title">Works with Your Shortcuts</div>
+        <div class="feature-desc" data-i18n="feat4_desc">Only triggers on a clean quick tap (&lt; 0.3s). Cmd+Shift, Ctrl+C — all your shortcuts still work perfectly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="container">
+    <div class="section-label">Setup</div>
+    <h2 data-i18n="how_headline">How It Works</h2>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title" data-i18n="step1_title">Map Your Keys</div>
+          <div class="step-desc" data-i18n="step1_desc">Open LangKey from the menu bar. Assign each modifier key (up to 4) to an input language.</div>
+        </div>
+        <div class="step-visual">
+          <div class="mini-popup">
+            <div class="mini-row"><span class="mini-key">L-Shift ⇧</span><span class="mini-lang">🇺🇸 English</span></div>
+            <div class="mini-row"><span class="mini-key">R-Shift ⇧</span><span class="mini-lang" id="howRS">🇰🇷 한국어</span></div>
+            <div class="mini-row"><span class="mini-key">L-Ctrl ⌃</span><span class="mini-lang" id="howLC">🇯🇵 日本語</span></div>
+            <div class="mini-row"><span class="mini-key">R-Ctrl ⌃</span><span class="mini-lang" id="howRC">🇨🇳 中文</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.1s">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title" data-i18n="step2_title">Tap to Switch</div>
+          <div class="step-desc" data-i18n="step2_desc">Tap the modifier key for the language you need. A brief overlay confirms which language you're now in.</div>
+        </div>
+        <div class="step-visual">
+          <div class="mini-tap">
+            <span class="mini-key-cap">R-Shift ⇧</span>
+            <span class="mini-arrow">→</span>
+          </div>
+          <div style="margin-top:8px">
+            <div class="mini-badge"><span id="howBadgeFlag">🇰🇷</span><span class="mini-badge-name" id="howBadgeName">한국어</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.2s">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title" data-i18n="step3_title">Type Confidently</div>
+          <div class="step-desc" data-i18n="step3_desc">You know exactly which language you're in. No more wrong-language surprises.</div>
+        </div>
+        <div class="step-visual" style="text-align:center">
+          <div class="mini-text" id="howSampleText">나는 학생입니다</div>
+          <div style="font-size:11px;color:var(--green);margin-top:4px">✓ Correct language</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section id="coming-soon">
+  <div class="container">
+    <div class="coming-soon-card fade-up">
+      <div class="coming-soon-dot-row">
+        <span class="coming-soon-dot"></span>
+        <span class="coming-soon-dot"></span>
+        <span class="coming-soon-dot"></span>
+      </div>
+      <h2 data-i18n="coming_headline">Coming Soon</h2>
+      <p data-i18n="coming_sub">LangKey is in final preparation for launch. Free to try, with a one-time license available at launch.</p>
+      <p class="price-note" data-i18n="price_req">Requires macOS 14.0 or later · Accessibility permission required</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo">
+        <div class="logo-icon" style="width:24px;height:24px;font-size:13px">⌨️</div>
+        LangKey
+      </div>
+      <div class="footer-tagline" data-i18n="footer_tagline">A macOS utility for multilingual typists.</div>
+      <div class="footer-copy" data-i18n="footer_copy">© 2025 LangKey</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── i18n ──────────────────────────────────────────────────────────────────────
+const i18n = {
+  en: {
+    title: 'LangKey — Type in the Right Language. Every Time.',
+    nav_coming_soon: 'Coming Soon',
+    hero_headline: 'Type in the Right Language.<br><em>Every Time.</em>',
+    hero_sub: 'LangKey gives each modifier key its own language — no more toggling, no more wrong-language mistakes.',
+    hero_cta2: 'See How It Works',
+    hero_badge: 'macOS 14+ · Coming Soon',
+    prob_label: 'The Problem',
+    prob_headline: 'Sound familiar?',
+    prob_without: 'Without LangKey',
+    prob_with: 'With LangKey',
+    prob_intended: 'Intended:',
+    prob_typed: 'What happens:',
+    prob_switching: 'switching language...',
+    prob_toggle: 'You start typing without knowing the current language. Realize it\'s wrong, delete, switch, then retype. Every time.',
+    feat_headline: 'One Key. One Language. Always.',
+    feat1_title: 'Up to 4 Languages',
+    feat1_desc: 'Map Left ⇧, Right ⇧, Left ⌃, and Right ⌃ to any 4 input sources.',
+    feat2_title: 'No More Toggling',
+    feat2_desc: 'Each key is dedicated. Tap Right ⇧ — it\'s always Korean. No guessing, no surprises.',
+    feat3_title: 'Instant Visual Feedback',
+    feat3_desc: 'A brief overlay shows the flag and language name every time you switch. You always know where you are.',
+    feat4_title: 'Works with Your Shortcuts',
+    feat4_desc: 'Only triggers on a clean quick tap (&lt; 0.3s). Cmd+Shift, Ctrl+C — all your shortcuts still work perfectly.',
+    how_headline: 'How It Works',
+    step1_title: 'Map Your Keys',
+    step1_desc: 'Open LangKey from the menu bar. Assign each modifier key (up to 4) to an input language.',
+    step2_title: 'Tap to Switch',
+    step2_desc: 'Tap the modifier key for the language you need. A brief overlay confirms which language you\'re now in.',
+    step3_title: 'Type Confidently',
+    step3_desc: 'You know exactly which language you\'re in. No more wrong-language surprises.',
+    coming_headline: 'Coming Soon',
+    coming_sub: 'LangKey is in final preparation for launch. Free to try, with a one-time license available at launch.',
+    price_req: 'Requires macOS 14.0 or later · Accessibility permission required',
+    footer_tagline: 'A macOS utility for multilingual typists.',
+    footer_copy: '© 2025 LangKey',
+  },
+  ko: {
+    title: 'LangKey — 언제나 올바른 언어로.',
+    nav_coming_soon: '출시 예정',
+    hero_headline: '언제나<br><em>올바른 언어로.</em>',
+    hero_sub: 'LangKey는 각 modifier 키에 언어를 지정합니다. 토글도 없고, 언어 실수도 없습니다.',
+    hero_cta2: '작동 방식 보기',
+    hero_badge: 'macOS 14+ · 출시 예정',
+    prob_label: '문제',
+    prob_headline: '이런 경험 있으신가요?',
+    prob_without: 'LangKey 없을 때',
+    prob_with: 'LangKey 설치 후',
+    prob_intended: '입력하려 했던 것:',
+    prob_typed: '실제 과정:',
+    prob_switching: '언어 전환 중...',
+    prob_toggle: '현재 언어를 모른 채 타이핑을 시작합니다. 잘못된 걸 발견하면 지우고, 언어 바꾸고, 다시 타이핑합니다. 매번.',
+    feat_headline: '키 하나, 언어 하나. 언제나.',
+    feat1_title: '최대 4개 언어',
+    feat1_desc: 'Left ⇧, Right ⇧, Left ⌃, Right ⌃을 각각 원하는 입력 소스에 매핑하세요.',
+    feat2_title: '토글 없음',
+    feat2_desc: '각 키는 하나의 언어에 전용됩니다. Right ⇧는 언제나 한국어. 추측도 없고 놀라움도 없습니다.',
+    feat3_title: '즉각적인 시각 피드백',
+    feat3_desc: '전환할 때마다 언어 국기와 이름이 화면에 잠깐 표시됩니다. 언제나 현재 언어를 알 수 있습니다.',
+    feat4_title: '단축키도 그대로',
+    feat4_desc: '깨끗하고 빠른 탭(0.3초 미만)에만 반응합니다. Cmd+Shift, Ctrl+C 등 모든 단축키가 정상 작동합니다.',
+    how_headline: '작동 방식',
+    step1_title: '키에 언어 매핑',
+    step1_desc: '메뉴바에서 LangKey를 열고 각 modifier 키(최대 4개)에 입력 언어를 지정하세요.',
+    step2_title: '탭으로 전환',
+    step2_desc: '필요한 언어의 modifier 키를 탭하세요. 잠깐 나타나는 오버레이가 현재 언어를 확인해 줍니다.',
+    step3_title: '자신 있게 타이핑',
+    step3_desc: '현재 어떤 언어인지 정확히 알 수 있습니다. 잘못된 언어로 입력하는 일이 없어집니다.',
+    coming_headline: '출시 준비 중',
+    coming_sub: 'LangKey가 곧 출시됩니다. 무료로 체험할 수 있으며, 출시 시 일회 구매 라이선스도 제공될 예정입니다.',
+    price_req: 'macOS 14.0 이상 필요 · 손쉬운 사용 권한 필요',
+    footer_tagline: '다국어 사용자를 위한 macOS 유틸리티.',
+    footer_copy: '© 2025 LangKey',
+  },
+  ja: {
+    title: 'LangKey — いつも正しい言語で。',
+    nav_coming_soon: '近日公開',
+    hero_headline: 'いつも<br><em>正しい言語で。</em>',
+    hero_sub: 'LangKeyは各モディファイアキーに言語を割り当てます。トグルも誤入力もなし。',
+    hero_cta2: '仕組みを見る',
+    hero_badge: 'macOS 14+ · 近日公開',
+    prob_label: '問題',
+    prob_headline: 'こんな経験ありますか？',
+    prob_without: 'LangKeyなしの場合',
+    prob_with: 'LangKey導入後',
+    prob_intended: '入力しようとしたもの:',
+    prob_typed: '実際の流れ:',
+    prob_switching: '言語切り替え中...',
+    prob_toggle: '今の言語を確認せずに入力を始めます。気づいたら削除して、言語を切り替えて、また入力し直します。毎回。',
+    feat_headline: 'キーひとつ、言語ひとつ。いつでも。',
+    feat1_title: '最大4言語',
+    feat1_desc: 'Left ⇧、Right ⇧、Left ⌃、Right ⌃を好きな入力ソースにマッピング。',
+    feat2_title: 'トグル不要',
+    feat2_desc: '各キーは専用です。Right ⇧は常に日本語。迷いも驚きもありません。',
+    feat3_title: '即座の視覚フィードバック',
+    feat3_desc: '切り替えるたびに国旗と言語名が画面に一瞬表示されます。今どの言語かを常に把握できます。',
+    feat4_title: 'ショートカットもそのまま',
+    feat4_desc: '素早いタップ（0.3秒未満）にのみ反応します。Cmd+Shift、Ctrl+Cなど全てのショートカットは通常通り機能します。',
+    how_headline: '仕組み',
+    step1_title: 'キーに言語を割り当て',
+    step1_desc: 'メニューバーからLangKeyを開き、各モディファイアキー（最大4つ）に入力言語を割り当てます。',
+    step2_title: 'タップで切り替え',
+    step2_desc: '必要な言語のモディファイアキーをタップします。オーバーレイが現在の言語を確認してくれます。',
+    step3_title: '自信を持って入力',
+    step3_desc: '今どの言語かを正確に把握できます。誤った言語で入力してしまうことはもうありません。',
+    coming_headline: '近日公開予定',
+    coming_sub: 'LangKeyはまもなくリリース予定です。無料でお試しいただけ、リリース時に買い切りライセンスもご用意します。',
+    price_req: 'macOS 14.0以降が必要・アクセシビリティ権限が必要',
+    footer_tagline: '多言語ユーザーのためのmacOSユーティリティ。',
+    footer_copy: '© 2025 LangKey',
+  },
+  'zh-hans': {
+    title: 'LangKey — 每次都用正确的语言。',
+    nav_coming_soon: '即将推出',
+    hero_headline: '每次都用<br><em>正确的语言。</em>',
+    hero_sub: 'LangKey 为每个修饰键指定一种语言。无需切换，不再输错。',
+    hero_cta2: '查看工作原理',
+    hero_badge: 'macOS 14+ · 即将推出',
+    prob_label: '问题',
+    prob_headline: '这种情况是否似曾相识？',
+    prob_without: '没有 LangKey 时',
+    prob_with: '安装 LangKey 后',
+    prob_intended: '想输入的:',
+    prob_typed: '实际经过:',
+    prob_switching: '切换语言中...',
+    prob_toggle: '不知道当前语言就开始输入。发现错了，删掉，切换，重新输入。每次都这样。',
+    feat_headline: '一键一语。永远如此。',
+    feat1_title: '最多4种语言',
+    feat1_desc: '将 Left ⇧、Right ⇧、Left ⌃、Right ⌃ 各自映射到所需输入源。',
+    feat2_title: '无需循环切换',
+    feat2_desc: '每个键专用于一种语言。Right ⇧ 永远是中文。不再猜测，不再意外。',
+    feat3_title: '即时视觉反馈',
+    feat3_desc: '每次切换时，屏幕上会短暂显示国旗和语言名称。始终知道当前使用哪种语言。',
+    feat4_title: '快捷键照常工作',
+    feat4_desc: '仅响应干净的快速点击（< 0.3秒）。Cmd+Shift、Ctrl+C 等所有快捷键照常使用。',
+    how_headline: '工作原理',
+    step1_title: '映射按键',
+    step1_desc: '从菜单栏打开 LangKey，为每个修饰键（最多4个）分配输入语言。',
+    step2_title: '点击切换',
+    step2_desc: '点击所需语言的修饰键。短暂的提示会确认当前语言。',
+    step3_title: '自信地输入',
+    step3_desc: '您确切知道当前使用哪种语言。不再有输错语言的意外。',
+    coming_headline: '即将推出',
+    coming_sub: 'LangKey 即将正式上线。可免费试用，上线时将提供一次性购买的终身授权。',
+    price_req: '需要 macOS 14.0 或更高版本 · 需要辅助功能权限',
+    footer_tagline: '面向多语言用户的 macOS 工具。',
+    footer_copy: '© 2025 LangKey',
+  },
+  'zh-hant': {
+    title: 'LangKey — 每次都用正確的語言。',
+    nav_coming_soon: '即將推出',
+    hero_headline: '每次都用<br><em>正確的語言。</em>',
+    hero_sub: 'LangKey 為每個修飾鍵指定一種語言。無需切換，不再輸錯。',
+    hero_cta2: '查看工作原理',
+    hero_badge: 'macOS 14+ · 即將推出',
+    prob_label: '問題',
+    prob_headline: '這種情況是否似曾相識？',
+    prob_without: '沒有 LangKey 時',
+    prob_with: '安裝 LangKey 後',
+    prob_intended: '想輸入的:',
+    prob_typed: '實際經過:',
+    prob_switching: '切換語言中...',
+    prob_toggle: '不知道當前語言就開始輸入。發現錯了，刪掉，切換，重新輸入。每次都這樣。',
+    feat_headline: '一鍵一語。永遠如此。',
+    feat1_title: '最多4種語言',
+    feat1_desc: '將 Left ⇧、Right ⇧、Left ⌃、Right ⌃ 各自映射到所需輸入源。',
+    feat2_title: '無需循環切換',
+    feat2_desc: '每個鍵專用於一種語言。Right ⇧ 永遠是中文。不再猜測，不再意外。',
+    feat3_title: '即時視覺反饋',
+    feat3_desc: '每次切換時，螢幕上會短暫顯示國旗和語言名稱。始終知道當前使用哪種語言。',
+    feat4_title: '快捷鍵照常工作',
+    feat4_desc: '僅響應乾淨的快速點擊（< 0.3秒）。Cmd+Shift、Ctrl+C 等所有快捷鍵照常使用。',
+    how_headline: '工作原理',
+    step1_title: '映射按鍵',
+    step1_desc: '從選單列開啟 LangKey，為每個修飾鍵（最多4個）分配輸入語言。',
+    step2_title: '點擊切換',
+    step2_desc: '點擊所需語言的修飾鍵。短暫的提示會確認當前語言。',
+    step3_title: '自信地輸入',
+    step3_desc: '您確切知道當前使用哪種語言。不再有輸錯語言的意外。',
+    coming_headline: '即將推出',
+    coming_sub: 'LangKey 即將正式上線。可免費試用，上線時將提供一次性購買的終身授權。',
+    price_req: '需要 macOS 14.0 或更高版本 · 需要輔助功能權限',
+    footer_tagline: '面向多語言用戶的 macOS 工具。',
+    footer_copy: '© 2025 LangKey',
+  },
+};
+
+const langMeta = {
+  en: { flag: '🇺🇸', code: 'EN', html: 'en' },
+  ko: { flag: '🇰🇷', code: '한국어', html: 'ko' },
+  ja: { flag: '🇯🇵', code: '日本語', html: 'ja' },
+  'zh-hans': { flag: '🇨🇳', code: '简体', html: 'zh-Hans' },
+  'zh-hant': { flag: '🇨🇳', code: '繁體', html: 'zh-Hant' },
+};
+
+function updateClock() {
+  const el = document.getElementById('mockupClock');
+  if (!el) return;
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  el.textContent = `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function detectLang() {
+  const nav = (navigator.language || 'en').toLowerCase();
+  if (nav.startsWith('ko')) return 'ko';
+  if (nav.startsWith('ja')) return 'ja';
+  if (nav.startsWith('zh-tw') || nav.startsWith('zh-hk') || nav.startsWith('zh-hant')) return 'zh-hant';
+  if (nav.startsWith('zh')) return 'zh-hans';
+  return 'en';
+}
+
+let currentLang = detectLang();
+
+const mockupData = {
+  en:        { current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: 'Add Language...', quit: 'Quit LangKey' },
+  ko:        { current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: '언어 추가...',       quit: 'LangKey 종료' },
+  ja:        { current: '🇯🇵 日本語',   menubar: '🇯🇵 ⌨️', rs: ['🇯🇵','日本語','ローマ字'],   lc: ['🇰🇷','한국어','두벌식'],  rc: ['🇨🇳','中文','拼音'],    overlay: ['🇯🇵','日本語'],   sampleText: 'わたしは学生です', addLang: '言語を追加...',      quit: 'LangKey を終了' },
+  'zh-hans': { current: '🇨🇳 中文',     menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','中文','拼音'],         lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','中文'],     sampleText: '我是学生',       addLang: '添加语言...',        quit: '退出 LangKey' },
+  'zh-hant': { current: '🇨🇳 繁體中文', menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','繁體中文','注音'],      lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','繁體中文'], sampleText: '我是學生',       addLang: '加入語言...',        quit: '結束 LangKey' },
+};
+
+function updateMockup(lang) {
+  const d = mockupData[lang] || mockupData.en;
+  document.getElementById('mockupMenubarIcon').textContent = d.menubar;
+  document.getElementById('mockupCurrent').textContent = d.current;
+  document.getElementById('mockupRSFlag').textContent = d.rs[0];
+  document.getElementById('mockupRSName').textContent = d.rs[1];
+  document.getElementById('mockupRSSub').textContent = d.rs[2];
+  document.getElementById('mockupLCFlag').textContent = d.lc[0];
+  document.getElementById('mockupLCName').textContent = d.lc[1];
+  document.getElementById('mockupLCSub').textContent = d.lc[2];
+  document.getElementById('mockupRCFlag').textContent = d.rc[0];
+  document.getElementById('mockupRCName').textContent = d.rc[1];
+  document.getElementById('mockupRCSub').textContent = d.rc[2];
+  document.getElementById('mockupOverlayFlag').textContent = d.overlay[0];
+  document.getElementById('mockupOverlayName').textContent = d.overlay[1];
+
+  // How It Works section
+  document.getElementById('howRS').textContent = d.rs[0] + ' ' + d.rs[1];
+  document.getElementById('howLC').textContent = d.lc[0] + ' ' + d.lc[1];
+  document.getElementById('howRC').textContent = d.rc[0] + ' ' + d.rc[1];
+  document.getElementById('howBadgeFlag').textContent = d.overlay[0];
+  document.getElementById('howBadgeName').textContent = d.overlay[1];
+  document.getElementById('howSampleText').textContent = d.sampleText;
+  document.getElementById('mockupAddLang').textContent = d.addLang;
+  document.getElementById('mockupQuit').textContent = d.quit;
+}
+
+function applyLang(lang) {
+  currentLang = lang;
+  const t = i18n[lang];
+  const meta = langMeta[lang];
+
+  document.documentElement.lang = meta.html;
+  document.title = t.title;
+  document.getElementById('currentLangFlag').textContent = meta.flag;
+  document.getElementById('currentLangCode').textContent = meta.code;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+
+  updateMockup(lang);
+  updateDemoContent(lang);
+  startDemoLoop();
+}
+
+function toggleLangDropdown() {
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+
+function setLang(lang) {
+  applyLang(lang);
+  document.getElementById('langDropdown').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
+
+// ── Typing Demo Animation ─────────────────────────────────────────────────────
+const demoExamples = {
+  en:        { wrong: 'sksms',   right: '나는',   flag: '🇰🇷', name: '한국어',   intended: '나는' },
+  ko:        { wrong: 'sksms',   right: '나는',   flag: '🇰🇷', name: '한국어',   intended: '나는' },
+  ja:        { wrong: 'watashi', right: 'わたし', flag: '🇯🇵', name: '日本語',   intended: 'わたし' },
+  'zh-hans': { wrong: 'wo shi',  right: '我是',   flag: '🇨🇳', name: '中文',     intended: '我是' },
+  'zh-hant': { wrong: 'xue xi', right: '學習',   flag: '🇨🇳', name: '繁體中文', intended: '學習' },
+};
+
+let currentDemo = demoExamples.en;
+let demoTimer = null;
+let demoRunning = false;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function updateDemoContent(lang) {
+  currentDemo = demoExamples[lang] || demoExamples.en;
+  document.getElementById('demoIntendedWord').textContent = currentDemo.intended;
+  document.getElementById('demoBadgeFlag').textContent = currentDemo.flag;
+  document.getElementById('demoBadgeName').textContent = currentDemo.name;
+}
+
+async function runDemo() {
+  if (demoRunning) return;
+  demoRunning = true;
+
+  const wrongChars = document.getElementById('wrongChars');
+  const wrongCursor = document.getElementById('wrongCursor');
+  const wrongText = document.getElementById('wrongText');
+  const squiggle = document.getElementById('squiggle');
+  const toggleChip = document.getElementById('toggleChip');
+  const keyCap = document.getElementById('keyCap');
+  const langBadge = document.getElementById('langBadge');
+  const rightChars = document.getElementById('rightChars');
+  const rightCursor = document.getElementById('rightCursor');
+  const checkIcon = document.getElementById('checkIcon');
+
+  // Reset
+  wrongChars.textContent = '';
+  wrongText.className = 'demo-text wrong';
+  wrongCursor.style.color = 'var(--red)';
+  squiggle.style.display = 'none';
+  toggleChip.classList.remove('visible');
+  keyCap.classList.remove('active');
+  langBadge.classList.remove('visible');
+  rightChars.textContent = '';
+  checkIcon.classList.remove('visible');
+  wrongCursor.style.display = 'inline-block';
+  rightCursor.style.display = 'inline-block';
+
+  await sleep(600);
+
+  // Type wrong characters
+  for (const ch of currentDemo.wrong) {
+    wrongChars.textContent += ch;
+    await sleep(140);
+  }
+  await sleep(400);
+
+  // Show squiggle — realize something's wrong
+  squiggle.style.display = 'block';
+  await sleep(600);
+  squiggle.style.display = 'none';
+
+  // Backspace — delete everything
+  while (wrongChars.textContent.length > 0) {
+    wrongChars.textContent = wrongChars.textContent.slice(0, -1);
+    await sleep(90);
+  }
+  await sleep(150);
+
+  // Toggle language — show switching chip
+  toggleChip.classList.add('visible');
+  await sleep(550);
+  toggleChip.classList.remove('visible');
+  await sleep(150);
+
+  // Retype correctly (muted — it worked but took all those steps)
+  wrongText.className = 'demo-text muted';
+  wrongCursor.style.color = 'var(--text3)';
+  for (const ch of currentDemo.right) {
+    wrongChars.textContent += ch;
+    await sleep(200);
+  }
+  wrongCursor.style.display = 'none';
+
+  await sleep(400);
+
+  // Right panel — With LangKey: tap key → overlay → type
+  keyCap.classList.add('active');
+  await sleep(200);
+  keyCap.classList.remove('active');
+  await sleep(100);
+
+  langBadge.classList.add('visible');
+  await sleep(900);
+  langBadge.classList.remove('visible');
+  await sleep(200);
+
+  rightCursor.style.display = 'inline-block';
+  for (const ch of currentDemo.right) {
+    rightChars.textContent += ch;
+    await sleep(220);
+  }
+  await sleep(200);
+  checkIcon.classList.add('visible');
+  rightCursor.style.display = 'none';
+
+  demoRunning = false;
+}
+
+function startDemoLoop() {
+  clearInterval(demoTimer);
+  runDemo();
+  demoTimer = setInterval(runDemo, 7000);
+}
+
+// ── Intersection Observer for fade-up ────────────────────────────────────────
+function initFadeUps() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+applyLang(currentLang);
+initFadeUps();
+startDemoLoop();
+updateClock();
+setInterval(updateClock, 30000);
+</script>
+</body>
+</html>
