@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>LangKey — Type in the Right Language. Every Time.</title>
 <meta name="description" content="LangKey maps modifier keys to input languages. No more wrong-language typing. Up to 4 languages, each with its own dedicated key.">
+<meta name="theme-color" content="#07070f">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#07070f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="256x256" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <style>
 :root {
   --bg: #07070f;
@@ -87,13 +91,16 @@ nav {
 .logo-icon {
   width: 30px;
   height: 30px;
-  background: linear-gradient(135deg, #7c6dfa, #5a4fcf);
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+  display: block;
+  object-fit: cover;
   box-shadow: 0 0 20px rgba(124,109,250,0.35);
+}
+
+.logo-icon.small {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
 }
 
 .nav-spacer { flex: 1; }
@@ -126,8 +133,9 @@ nav {
   background: var(--bg2);
   border: 1px solid var(--border2);
   border-radius: 10px;
-  overflow: hidden;
-  min-width: 140px;
+  overflow-y: auto;
+  min-width: 150px;
+  max-height: min(420px, calc(100vh - 90px));
   box-shadow: 0 16px 40px rgba(0,0,0,0.5);
   z-index: 200;
 }
@@ -426,6 +434,15 @@ h1 em {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.mapping-cell.active {
+  background: rgba(124,109,250,0.07);
+  border-left: 2px solid rgba(124,109,250,0.4);
+}
+
+.mapping-cell.active .cell-key {
+  color: var(--accent2);
 }
 
 .cell-key {
@@ -1147,7 +1164,7 @@ footer {
 <nav>
   <div class="nav-inner">
     <a href="#" class="logo">
-      <div class="logo-icon">⌨️</div>
+      <img class="logo-icon" src="/apple-touch-icon.png" alt="" width="30" height="30">
       LangKey
     </a>
     <div class="nav-spacer"></div>
@@ -1157,13 +1174,7 @@ footer {
         <span id="currentLangCode">EN</span>
         <span style="font-size:10px;margin-left:2px;color:var(--text3)">▾</span>
       </button>
-      <div class="lang-dropdown" id="langDropdown">
-        <div class="lang-option" data-lang="en" onclick="setLang('en')"><span id="enOptionFlag">🇺🇸</span> EN</div>
-        <div class="lang-option" data-lang="ko" onclick="setLang('ko')">🇰🇷 한국어</div>
-        <div class="lang-option" data-lang="ja" onclick="setLang('ja')">🇯🇵 日本語</div>
-        <div class="lang-option" data-lang="zh-hans" onclick="setLang('zh-hans')">🇨🇳 简体</div>
-        <div class="lang-option" data-lang="zh-hant" onclick="setLang('zh-hant')">🇨🇳 繁體</div>
-      </div>
+      <div class="lang-dropdown" id="langDropdown"></div>
     </div>
     <div class="nav-coming-soon" data-i18n="nav_coming_soon">Coming Soon</div>
   </div>
@@ -1216,18 +1227,18 @@ footer {
               </div>
             </div>
             <div class="popup-grid">
-              <div class="mapping-cell">
+              <div class="mapping-cell" id="mockupLSCell">
                 <div class="cell-key">Left ⇧</div>
                 <div class="cell-lang">
-                  <span>🇺🇸</span>
+                  <span id="mockupLSFlag">🇺🇸</span>
                   <div>
-                    <div>English</div>
-                    <div class="cell-lang-name">ABC</div>
+                    <div id="mockupLSName">English</div>
+                    <div class="cell-lang-name" id="mockupLSSub">ABC</div>
                   </div>
                 </div>
               </div>
-              <div class="mapping-cell" style="background:rgba(124,109,250,0.07);border-left:2px solid rgba(124,109,250,0.4)">
-                <div class="cell-key" style="color:var(--accent2)">Right ⇧ ●</div>
+              <div class="mapping-cell" id="mockupRSCell">
+                <div class="cell-key">Right ⇧ ●</div>
                 <div class="cell-lang">
                   <span id="mockupRSFlag">🇰🇷</span>
                   <div>
@@ -1236,7 +1247,7 @@ footer {
                   </div>
                 </div>
               </div>
-              <div class="mapping-cell">
+              <div class="mapping-cell" id="mockupLCCell">
                 <div class="cell-key">Left ⌃</div>
                 <div class="cell-lang">
                   <span id="mockupLCFlag">🇯🇵</span>
@@ -1246,7 +1257,7 @@ footer {
                   </div>
                 </div>
               </div>
-              <div class="mapping-cell">
+              <div class="mapping-cell" id="mockupRCCell">
                 <div class="cell-key">Right ⌃</div>
                 <div class="cell-lang">
                   <span id="mockupRCFlag">🇨🇳</span>
@@ -1384,7 +1395,7 @@ footer {
         </div>
         <div class="step-visual">
           <div class="mini-popup">
-            <div class="mini-row"><span class="mini-key">L-Shift ⇧</span><span class="mini-lang">🇺🇸 English</span></div>
+            <div class="mini-row"><span class="mini-key">L-Shift ⇧</span><span class="mini-lang" id="howLS">🇺🇸 English</span></div>
             <div class="mini-row"><span class="mini-key">R-Shift ⇧</span><span class="mini-lang" id="howRS">🇰🇷 한국어</span></div>
             <div class="mini-row"><span class="mini-key">L-Ctrl ⌃</span><span class="mini-lang" id="howLC">🇯🇵 日本語</span></div>
             <div class="mini-row"><span class="mini-key">R-Ctrl ⌃</span><span class="mini-lang" id="howRC">🇨🇳 中文</span></div>
@@ -1399,7 +1410,7 @@ footer {
         </div>
         <div class="step-visual">
           <div class="mini-tap">
-            <span class="mini-key-cap">R-Shift ⇧</span>
+            <span class="mini-key-cap" id="howKeyCap">R-Shift ⇧</span>
             <span class="mini-arrow">→</span>
           </div>
           <div style="margin-top:8px">
@@ -1443,7 +1454,7 @@ footer {
   <div class="container">
     <div class="footer-inner">
       <div class="logo">
-        <div class="logo-icon" style="width:24px;height:24px;font-size:13px">⌨️</div>
+        <img class="logo-icon small" src="/apple-touch-icon.png" alt="" width="24" height="24">
         LangKey
       </div>
       <div class="footer-tagline" data-i18n="footer_tagline">A macOS utility for multilingual typists.</div>
@@ -1661,7 +1672,48 @@ const langMeta = {
   ja: { flag: '🇯🇵', code: '日本語', html: 'ja' },
   'zh-hans': { flag: '🇨🇳', code: '简体', html: 'zh-Hans' },
   'zh-hant': { flag: '🇨🇳', code: '繁體', html: 'zh-Hant' },
+  es: { flag: '🇪🇸', code: 'Español', html: 'es' },
+  fr: { flag: '🇫🇷', code: 'Français', html: 'fr' },
+  de: { flag: '🇩🇪', code: 'Deutsch', html: 'de' },
+  it: { flag: '🇮🇹', code: 'Italiano', html: 'it' },
+  'pt-br': { flag: '🇧🇷', code: 'Português', html: 'pt-BR' },
+  'pt-pt': { flag: '🇵🇹', code: 'Português', html: 'pt-PT' },
+  nl: { flag: '🇳🇱', code: 'Nederlands', html: 'nl' },
+  sv: { flag: '🇸🇪', code: 'Svenska', html: 'sv' },
+  pl: { flag: '🇵🇱', code: 'Polski', html: 'pl' },
+  tr: { flag: '🇹🇷', code: 'Türkçe', html: 'tr' },
+  ru: { flag: '🇷🇺', code: 'Русский', html: 'ru' },
+  uk: { flag: '🇺🇦', code: 'Українська', html: 'uk' },
+  ar: { flag: '🇸🇦', code: 'العربية', html: 'ar' },
+  he: { flag: '🇮🇱', code: 'עברית', html: 'he' },
+  hi: { flag: '🇮🇳', code: 'हिन्दी', html: 'hi' },
+  id: { flag: '🇮🇩', code: 'Indonesia', html: 'id' },
+  ms: { flag: '🇲🇾', code: 'Melayu', html: 'ms' },
+  th: { flag: '🇹🇭', code: 'ไทย', html: 'th' },
+  vi: { flag: '🇻🇳', code: 'Tiếng Việt', html: 'vi' },
 };
+
+Object.assign(i18n, {
+  es: { title: 'LangKey — Escribe siempre en el idioma correcto.', nav_coming_soon: 'Próximamente', hero_headline: 'Escribe siempre<br><em>en el idioma correcto.</em>', hero_sub: 'LangKey asigna un idioma a cada tecla modificadora para evitar cambios repetidos y errores de idioma.', hero_cta2: 'Ver cómo funciona', hero_badge: 'macOS 14+ · Próximamente', prob_label: 'El problema', prob_headline: '¿Te suena familiar?', prob_without: 'Sin LangKey', prob_with: 'Con LangKey', prob_intended: 'Querías escribir:', prob_typed: 'Lo que sale:', prob_switching: 'cambiando idioma...', prob_toggle: 'Empiezas a escribir sin saber el idioma activo. Te das cuenta, borras, cambias y vuelves a escribir.', feat_headline: 'Una tecla. Un idioma. Siempre.', feat1_title: 'Hasta 4 idiomas', feat1_desc: 'Asigna ⇧ izquierda, ⇧ derecha, ⌃ izquierda y ⌃ derecha a distintas fuentes de entrada.', feat2_title: 'Sin alternar a ciegas', feat2_desc: 'Cada tecla tiene un idioma fijo. No hay que adivinar dónde caerá el siguiente cambio.', feat3_title: 'Confirmación visual inmediata', feat3_desc: 'Una pequeña superposición muestra la bandera y el idioma cada vez que cambias.', feat4_title: 'Tus atajos siguen funcionando', feat4_desc: 'Solo responde a un toque rápido sin combinar teclas (&lt; 0,3 s). Cmd+Shift y Ctrl+C siguen igual.', how_headline: 'Cómo funciona', step1_title: 'Asigna tus teclas', step1_desc: 'Abre LangKey desde la barra de menús y asigna un idioma a cada tecla modificadora.', step2_title: 'Toca para cambiar', step2_desc: 'Toca la tecla del idioma que necesitas. La superposición confirma el idioma activo.', step3_title: 'Escribe con confianza', step3_desc: 'Sabes exactamente en qué idioma estás escribiendo.', coming_headline: 'Próximamente', coming_sub: 'LangKey está en la fase final antes del lanzamiento. Podrás probarlo gratis.', price_req: 'Requiere macOS 14.0 o posterior · Permiso de accesibilidad requerido', footer_tagline: 'Una utilidad de macOS para escribir en varios idiomas.' },
+  fr: { title: 'LangKey — Tapez toujours dans la bonne langue.', nav_coming_soon: 'Bientôt disponible', hero_headline: 'Tapez toujours<br><em>dans la bonne langue.</em>', hero_sub: 'LangKey attribue une langue à chaque touche modificatrice pour éviter les bascules répétées et les erreurs de langue.', hero_cta2: 'Voir le fonctionnement', hero_badge: 'macOS 14+ · Bientôt disponible', prob_label: 'Le problème', prob_headline: 'Ça vous arrive aussi ?', prob_without: 'Sans LangKey', prob_with: 'Avec LangKey', prob_intended: 'Vous vouliez écrire :', prob_typed: 'Résultat :', prob_switching: 'changement de langue...', prob_toggle: 'Vous commencez à taper sans connaître la langue active. Vous effacez, changez de langue, puis recommencez.', feat_headline: 'Une touche. Une langue. Toujours.', feat1_title: 'Jusqu’à 4 langues', feat1_desc: 'Associez ⇧ gauche, ⇧ droite, ⌃ gauche et ⌃ droite à des sources de saisie.', feat2_title: 'Plus de bascule au hasard', feat2_desc: 'Chaque touche garde sa langue. Plus besoin de deviner.', feat3_title: 'Retour visuel instantané', feat3_desc: 'Une brève pastille affiche le drapeau et le nom de la langue.', feat4_title: 'Vos raccourcis restent intacts', feat4_desc: 'Réagit seulement à une pression rapide non combinée (&lt; 0,3 s).', how_headline: 'Fonctionnement', step1_title: 'Associez les touches', step1_desc: 'Ouvrez LangKey depuis la barre de menus et attribuez une langue à chaque touche.', step2_title: 'Touchez pour changer', step2_desc: 'Touchez la touche de la langue voulue. La pastille confirme la langue active.', step3_title: 'Tapez sereinement', step3_desc: 'Vous savez toujours dans quelle langue vous tapez.', coming_headline: 'Bientôt disponible', coming_sub: 'LangKey est en préparation finale avant son lancement.', price_req: 'Nécessite macOS 14.0 ou ultérieur · Autorisation Accessibilité requise', footer_tagline: 'Un utilitaire macOS pour les personnes multilingues.' },
+  de: { title: 'LangKey — Immer in der richtigen Sprache tippen.', nav_coming_soon: 'Demnächst', hero_headline: 'Immer in der<br><em>richtigen Sprache tippen.</em>', hero_sub: 'LangKey weist jeder Modifikatortaste eine Eingabesprache zu und verhindert ständiges Umschalten.', hero_cta2: 'So funktioniert es', hero_badge: 'macOS 14+ · Demnächst', prob_label: 'Das Problem', prob_headline: 'Kommt Ihnen das bekannt vor?', prob_without: 'Ohne LangKey', prob_with: 'Mit LangKey', prob_intended: 'Gewollt:', prob_typed: 'Eingegeben:', prob_switching: 'Sprache wechseln...', prob_toggle: 'Sie tippen los, merken die falsche Sprache, löschen, schalten um und tippen erneut.', feat_headline: 'Eine Taste. Eine Sprache. Immer.', feat1_title: 'Bis zu 4 Sprachen', feat1_desc: 'Ordnen Sie linker/rechter ⇧ und linker/rechter ⌃ eigene Eingabequellen zu.', feat2_title: 'Kein Durchschalten mehr', feat2_desc: 'Jede Taste bleibt fest zugewiesen. Kein Raten mehr.', feat3_title: 'Sofort sichtbare Rückmeldung', feat3_desc: 'Ein kurzes Overlay zeigt Flagge und Sprachname beim Wechsel.', feat4_title: 'Shortcuts bleiben erhalten', feat4_desc: 'Reagiert nur auf kurzes Antippen ohne Tastenkombination (&lt; 0,3 s).', how_headline: 'So funktioniert es', step1_title: 'Tasten zuweisen', step1_desc: 'Öffnen Sie LangKey in der Menüleiste und weisen Sie jeder Taste eine Sprache zu.', step2_title: 'Antippen zum Wechseln', step2_desc: 'Tippen Sie die Taste der gewünschten Sprache an.', step3_title: 'Sicher tippen', step3_desc: 'Sie wissen genau, welche Eingabesprache aktiv ist.', coming_headline: 'Demnächst', coming_sub: 'LangKey befindet sich in der finalen Vorbereitung.', price_req: 'Erfordert macOS 14.0 oder neuer · Bedienungshilfen-Berechtigung erforderlich', footer_tagline: 'Ein macOS-Dienstprogramm für mehrsprachiges Tippen.' },
+  it: { title: 'LangKey — Scrivi sempre nella lingua giusta.', nav_coming_soon: 'In arrivo', hero_headline: 'Scrivi sempre<br><em>nella lingua giusta.</em>', hero_sub: 'LangKey assegna una lingua a ogni tasto modificatore, riducendo cambi ripetuti ed errori.', hero_cta2: 'Scopri come funziona', hero_badge: 'macOS 14+ · In arrivo', prob_label: 'Il problema', prob_headline: 'Ti è mai capitato?', prob_without: 'Senza LangKey', prob_with: 'Con LangKey', prob_intended: 'Volevi scrivere:', prob_typed: 'Risultato:', prob_switching: 'cambio lingua...', prob_toggle: 'Inizi a scrivere senza sapere la lingua attiva. Cancelli, cambi lingua e ricominci.', feat_headline: 'Un tasto. Una lingua. Sempre.', how_headline: 'Come funziona', step1_title: 'Associa i tasti', step1_desc: 'Apri LangKey dalla barra dei menu e assegna una lingua a ogni tasto.', step2_title: 'Tocca per cambiare', step2_desc: 'Tocca il tasto della lingua che ti serve.', step3_title: 'Scrivi con sicurezza', step3_desc: 'Sai sempre in quale lingua stai scrivendo.', coming_headline: 'In arrivo', coming_sub: 'LangKey è in preparazione finale per il lancio.', price_req: 'Richiede macOS 14.0 o successivo · Permesso Accessibilità richiesto', footer_tagline: 'Una utility macOS per chi scrive in più lingue.' },
+  'pt-br': { title: 'LangKey — Digite sempre no idioma certo.', nav_coming_soon: 'Em breve', hero_headline: 'Digite sempre<br><em>no idioma certo.</em>', hero_sub: 'LangKey dá um idioma a cada tecla modificadora para evitar alternâncias e erros.', hero_cta2: 'Ver como funciona', hero_badge: 'macOS 14+ · Em breve', prob_label: 'O problema', prob_headline: 'Isso parece familiar?', prob_without: 'Sem LangKey', prob_with: 'Com LangKey', prob_intended: 'Você queria:', prob_typed: 'Saiu assim:', prob_switching: 'trocando idioma...', prob_toggle: 'Você começa a digitar sem saber o idioma ativo, apaga, troca e digita de novo.', feat_headline: 'Uma tecla. Um idioma. Sempre.', how_headline: 'Como funciona', step1_title: 'Mapeie suas teclas', step1_desc: 'Abra o LangKey na barra de menus e atribua um idioma a cada tecla.', step2_title: 'Toque para trocar', step2_desc: 'Toque na tecla do idioma necessário.', step3_title: 'Digite com confiança', step3_desc: 'Você sabe exatamente qual idioma está ativo.', coming_headline: 'Em breve', coming_sub: 'LangKey está nos ajustes finais para o lançamento.', price_req: 'Requer macOS 14.0 ou posterior · Permissão de Acessibilidade necessária', footer_tagline: 'Um utilitário macOS para quem digita em vários idiomas.' },
+  'pt-pt': { title: 'LangKey — Escreva sempre no idioma certo.', nav_coming_soon: 'Brevemente', hero_headline: 'Escreva sempre<br><em>no idioma certo.</em>', hero_sub: 'LangKey atribui um idioma a cada tecla modificadora para evitar trocas repetidas.', hero_cta2: 'Ver como funciona', hero_badge: 'macOS 14+ · Brevemente', prob_label: 'O problema', prob_headline: 'Isto acontece-lhe?', prob_without: 'Sem LangKey', prob_with: 'Com LangKey', prob_intended: 'Queria escrever:', prob_typed: 'Saiu assim:', prob_switching: 'a mudar idioma...', prob_toggle: 'Começa a escrever sem saber o idioma activo, apaga, muda e escreve novamente.', feat_headline: 'Uma tecla. Um idioma. Sempre.', how_headline: 'Como funciona', step1_title: 'Atribua as teclas', step1_desc: 'Abra o LangKey na barra de menus e atribua um idioma a cada tecla.', step2_title: 'Toque para mudar', step2_desc: 'Toque na tecla do idioma de que precisa.', step3_title: 'Escreva com confiança', step3_desc: 'Sabe sempre que idioma está activo.', coming_headline: 'Brevemente', coming_sub: 'LangKey está na preparação final para lançamento.', price_req: 'Requer macOS 14.0 ou posterior · Permissão de Acessibilidade necessária', footer_tagline: 'Um utilitário macOS para utilizadores multilingues.' },
+  nl: { title: 'LangKey — Typ altijd in de juiste taal.', nav_coming_soon: 'Binnenkort', hero_headline: 'Typ altijd<br><em>in de juiste taal.</em>', hero_sub: 'LangKey koppelt elke modificatietoets aan een invoertaal, zonder eindeloos wisselen.', hero_cta2: 'Bekijk hoe het werkt', hero_badge: 'macOS 14+ · Binnenkort', prob_label: 'Het probleem', prob_headline: 'Herkenbaar?', prob_without: 'Zonder LangKey', prob_with: 'Met LangKey', prob_intended: 'Bedoeld:', prob_typed: 'Getypt:', prob_switching: 'taal wisselen...', prob_toggle: 'Je begint te typen zonder de actieve taal te weten, wist alles, wisselt en begint opnieuw.', feat_headline: 'Eén toets. Eén taal. Altijd.', how_headline: 'Zo werkt het', step1_title: 'Wijs toetsen toe', step1_desc: 'Open LangKey in de menubalk en wijs elke toets een taal toe.', step2_title: 'Tik om te wisselen', step2_desc: 'Tik op de toets voor de taal die je nodig hebt.', step3_title: 'Typ met vertrouwen', step3_desc: 'Je weet altijd welke taal actief is.', coming_headline: 'Binnenkort', coming_sub: 'LangKey wordt klaargemaakt voor lancering.', price_req: 'Vereist macOS 14.0 of nieuwer · Toegankelijkheidsrechten vereist', footer_tagline: 'Een macOS-hulpprogramma voor meertalige typisten.' },
+  sv: { title: 'LangKey — Skriv alltid på rätt språk.', nav_coming_soon: 'Kommer snart', hero_headline: 'Skriv alltid<br><em>på rätt språk.</em>', hero_sub: 'LangKey ger varje modifierartangent ett eget inmatningsspråk.', hero_cta2: 'Se hur det fungerar', hero_badge: 'macOS 14+ · Kommer snart', prob_label: 'Problemet', prob_headline: 'Känns det igen?', prob_without: 'Utan LangKey', prob_with: 'Med LangKey', prob_intended: 'Du ville skriva:', prob_typed: 'Det blev:', prob_switching: 'byter språk...', prob_toggle: 'Du börjar skriva utan att veta aktivt språk, raderar, byter och skriver igen.', feat_headline: 'En tangent. Ett språk. Alltid.', how_headline: 'Så fungerar det', step1_title: 'Tilldela tangenter', step1_desc: 'Öppna LangKey i menyraden och välj språk för varje tangent.', step2_title: 'Tryck för att byta', step2_desc: 'Tryck på tangenten för språket du behöver.', step3_title: 'Skriv tryggt', step3_desc: 'Du vet alltid vilket språk som är aktivt.', coming_headline: 'Kommer snart', coming_sub: 'LangKey är i slutfasen inför lansering.', price_req: 'Kräver macOS 14.0 eller senare · Hjälpmedelsbehörighet krävs', footer_tagline: 'Ett macOS-verktyg för flerspråkiga användare.' },
+  pl: { title: 'LangKey — Zawsze pisz we właściwym języku.', nav_coming_soon: 'Wkrótce', hero_headline: 'Zawsze pisz<br><em>we właściwym języku.</em>', hero_sub: 'LangKey przypisuje język do każdego klawisza modyfikującego.', hero_cta2: 'Zobacz, jak działa', hero_badge: 'macOS 14+ · Wkrótce', prob_label: 'Problem', prob_headline: 'Brzmi znajomo?', prob_without: 'Bez LangKey', prob_with: 'Z LangKey', prob_intended: 'Chcesz wpisać:', prob_typed: 'Wychodzi:', prob_switching: 'zmiana języka...', prob_toggle: 'Zaczynasz pisać bez sprawdzania języka, kasujesz, zmieniasz i wpisujesz ponownie.', feat_headline: 'Jeden klawisz. Jeden język. Zawsze.', how_headline: 'Jak to działa', step1_title: 'Przypisz klawisze', step1_desc: 'Otwórz LangKey z paska menu i przypisz język do każdego klawisza.', step2_title: 'Dotknij, aby zmienić', step2_desc: 'Dotknij klawisza wybranego języka.', step3_title: 'Pisz pewnie', step3_desc: 'Zawsze wiesz, który język jest aktywny.', coming_headline: 'Wkrótce', coming_sub: 'LangKey jest w końcowym etapie przygotowań.', price_req: 'Wymaga macOS 14.0 lub nowszego · Wymagane uprawnienia Dostępności', footer_tagline: 'Narzędzie macOS dla osób piszących w wielu językach.' },
+  tr: { title: 'LangKey — Her zaman doğru dilde yazın.', nav_coming_soon: 'Yakında', hero_headline: 'Her zaman<br><em>doğru dilde yazın.</em>', hero_sub: 'LangKey her değiştirici tuşa bir giriş dili atar.', hero_cta2: 'Nasıl çalışır', hero_badge: 'macOS 14+ · Yakında', prob_label: 'Sorun', prob_headline: 'Tanıdık geldi mi?', prob_without: 'LangKey olmadan', prob_with: 'LangKey ile', prob_intended: 'Yazmak istediğiniz:', prob_typed: 'Çıkan:', prob_switching: 'dil değiştiriliyor...', prob_toggle: 'Etkin dili bilmeden yazmaya başlar, siler, değiştirir ve tekrar yazarsınız.', feat_headline: 'Bir tuş. Bir dil. Her zaman.', how_headline: 'Nasıl çalışır', step1_title: 'Tuşları eşleştirin', step1_desc: 'LangKey’i menü çubuğundan açıp her tuşa bir dil atayın.', step2_title: 'Geçmek için dokunun', step2_desc: 'Gereken dilin tuşuna dokunun.', step3_title: 'Güvenle yazın', step3_desc: 'Hangi dilde olduğunuzu her zaman bilirsiniz.', coming_headline: 'Yakında', coming_sub: 'LangKey lansman için son hazırlık aşamasında.', price_req: 'macOS 14.0 veya üstü gerekir · Erişilebilirlik izni gerekir', footer_tagline: 'Çok dilli kullanıcılar için macOS aracı.' },
+  ru: { title: 'LangKey — Всегда печатайте на нужном языке.', nav_coming_soon: 'Скоро', hero_headline: 'Печатайте<br><em>на нужном языке.</em>', hero_sub: 'LangKey назначает отдельный язык каждой клавише-модификатору.', hero_cta2: 'Как это работает', hero_badge: 'macOS 14+ · Скоро', prob_label: 'Проблема', prob_headline: 'Знакомая ситуация?', prob_without: 'Без LangKey', prob_with: 'С LangKey', prob_intended: 'Хотели ввести:', prob_typed: 'Получилось:', prob_switching: 'переключение языка...', prob_toggle: 'Вы начинаете печатать не на том языке, удаляете текст, переключаете язык и вводите снова.', feat_headline: 'Одна клавиша. Один язык. Всегда.', how_headline: 'Как это работает', step1_title: 'Назначьте клавиши', step1_desc: 'Откройте LangKey в строке меню и назначьте язык каждой клавише.', step2_title: 'Нажмите для переключения', step2_desc: 'Нажмите клавишу нужного языка.', step3_title: 'Печатайте уверенно', step3_desc: 'Вы всегда знаете активный язык.', coming_headline: 'Скоро', coming_sub: 'LangKey готовится к запуску.', price_req: 'Требуется macOS 14.0 или новее · Требуется доступ к Универсальному доступу', footer_tagline: 'Утилита macOS для многоязычного ввода.' },
+  uk: { title: 'LangKey — Завжди друкуйте потрібною мовою.', nav_coming_soon: 'Незабаром', hero_headline: 'Друкуйте<br><em>потрібною мовою.</em>', hero_sub: 'LangKey призначає окрему мову кожній клавіші-модифікатору.', hero_cta2: 'Як це працює', hero_badge: 'macOS 14+ · Незабаром', prob_label: 'Проблема', prob_headline: 'Знайома ситуація?', prob_without: 'Без LangKey', prob_with: 'З LangKey', prob_intended: 'Хотіли ввести:', prob_typed: 'Вийшло:', prob_switching: 'перемикання мови...', prob_toggle: 'Ви починаєте друкувати не тією мовою, видаляєте, перемикаєте й вводите знову.', feat_headline: 'Одна клавіша. Одна мова. Завжди.', how_headline: 'Як це працює', step1_title: 'Призначте клавіші', step1_desc: 'Відкрийте LangKey у рядку меню та призначте мову кожній клавіші.', step2_title: 'Натисніть для перемикання', step2_desc: 'Натисніть клавішу потрібної мови.', step3_title: 'Друкуйте впевнено', step3_desc: 'Ви завжди знаєте активну мову.', coming_headline: 'Незабаром', coming_sub: 'LangKey готується до запуску.', price_req: 'Потрібна macOS 14.0 або новіша · Потрібен дозвіл Доступності', footer_tagline: 'Утиліта macOS для багатомовного введення.' },
+  ar: { title: 'LangKey — اكتب دائمًا باللغة الصحيحة.', nav_coming_soon: 'قريبًا', hero_headline: 'اكتب دائمًا<br><em>باللغة الصحيحة.</em>', hero_sub: 'يخصص LangKey لغة إدخال لكل مفتاح تعديل، حتى لا تضطر للتبديل مرارًا.', hero_cta2: 'شاهد طريقة العمل', hero_badge: 'macOS 14+ · قريبًا', prob_label: 'المشكلة', prob_headline: 'هل يحدث هذا معك؟', prob_without: 'بدون LangKey', prob_with: 'مع LangKey', prob_intended: 'كنت تريد كتابة:', prob_typed: 'ما ظهر:', prob_switching: 'جارٍ تغيير اللغة...', prob_toggle: 'تبدأ الكتابة دون معرفة اللغة النشطة، ثم تحذف وتبدل وتكتب من جديد.', feat_headline: 'مفتاح واحد. لغة واحدة. دائمًا.', how_headline: 'طريقة العمل', step1_title: 'عيّن المفاتيح', step1_desc: 'افتح LangKey من شريط القوائم وعيّن لغة لكل مفتاح.', step2_title: 'اضغط للتبديل', step2_desc: 'اضغط مفتاح اللغة التي تحتاجها.', step3_title: 'اكتب بثقة', step3_desc: 'تعرف دائمًا اللغة النشطة.', coming_headline: 'قريبًا', coming_sub: 'LangKey في المرحلة النهائية قبل الإطلاق.', price_req: 'يتطلب macOS 14.0 أو أحدث · يتطلب إذن تسهيلات الاستخدام', footer_tagline: 'أداة macOS لمن يكتبون بعدة لغات.' },
+  he: { title: 'LangKey — הקלדה תמיד בשפה הנכונה.', nav_coming_soon: 'בקרוב', hero_headline: 'הקלדה תמיד<br><em>בשפה הנכונה.</em>', hero_sub: 'LangKey משייך שפת קלט לכל מקש משנה ומונע החלפות חוזרות.', hero_cta2: 'איך זה עובד', hero_badge: 'macOS 14+ · בקרוב', prob_label: 'הבעיה', prob_headline: 'נשמע מוכר?', prob_without: 'בלי LangKey', prob_with: 'עם LangKey', prob_intended: 'רצית לכתוב:', prob_typed: 'יצא:', prob_switching: 'מחליף שפה...', prob_toggle: 'מתחילים להקליד בלי לדעת איזו שפה פעילה, מוחקים, מחליפים ומקלידים שוב.', feat_headline: 'מקש אחד. שפה אחת. תמיד.', how_headline: 'איך זה עובד', step1_title: 'מגדירים מקשים', step1_desc: 'פותחים את LangKey משורת התפריטים ומשייכים שפה לכל מקש.', step2_title: 'מקישים כדי להחליף', step2_desc: 'מקישים על המקש של השפה הרצויה.', step3_title: 'מקלידים בביטחון', step3_desc: 'תמיד יודעים איזו שפה פעילה.', coming_headline: 'בקרוב', coming_sub: 'LangKey נמצא בהכנות האחרונות להשקה.', price_req: 'נדרש macOS 14.0 ומעלה · נדרשת הרשאת נגישות', footer_tagline: 'כלי macOS למקלידים בכמה שפות.' },
+  hi: { title: 'LangKey — हमेशा सही भाषा में टाइप करें।', nav_coming_soon: 'जल्द आ रहा है', hero_headline: 'हमेशा<br><em>सही भाषा में टाइप करें।</em>', hero_sub: 'LangKey हर modifier कुंजी को एक इनपुट भाषा देता है, ताकि बार-बार बदलना न पड़े।', hero_cta2: 'कैसे काम करता है', hero_badge: 'macOS 14+ · जल्द आ रहा है', prob_label: 'समस्या', prob_headline: 'क्या यह जाना-पहचाना है?', prob_without: 'LangKey के बिना', prob_with: 'LangKey के साथ', prob_intended: 'आप लिखना चाहते थे:', prob_typed: 'जो निकला:', prob_switching: 'भाषा बदल रही है...', prob_toggle: 'आप सक्रिय भाषा जाने बिना लिखना शुरू करते हैं, मिटाते हैं, भाषा बदलते हैं और फिर लिखते हैं।', feat_headline: 'एक कुंजी। एक भाषा। हमेशा।', how_headline: 'यह कैसे काम करता है', step1_title: 'कुंजियाँ सेट करें', step1_desc: 'मेनू बार से LangKey खोलें और हर कुंजी को भाषा दें।', step2_title: 'बदलने के लिए टैप करें', step2_desc: 'जिस भाषा की ज़रूरत है उसकी कुंजी टैप करें।', step3_title: 'निश्चिंत होकर लिखें', step3_desc: 'आपको हमेशा पता रहता है कि कौन सी भाषा सक्रिय है।', coming_headline: 'जल्द आ रहा है', coming_sub: 'LangKey लॉन्च की अंतिम तैयारी में है।', price_req: 'macOS 14.0 या बाद का संस्करण चाहिए · Accessibility अनुमति चाहिए', footer_tagline: 'बहुभाषी टाइपिंग के लिए macOS उपयोगिता।' },
+  id: { title: 'LangKey — Selalu mengetik dalam bahasa yang tepat.', nav_coming_soon: 'Segera hadir', hero_headline: 'Selalu mengetik<br><em>dalam bahasa yang tepat.</em>', hero_sub: 'LangKey menetapkan satu bahasa input untuk setiap tombol modifier.', hero_cta2: 'Lihat cara kerjanya', hero_badge: 'macOS 14+ · Segera hadir', prob_label: 'Masalahnya', prob_headline: 'Pernah mengalami ini?', prob_without: 'Tanpa LangKey', prob_with: 'Dengan LangKey', prob_intended: 'Ingin mengetik:', prob_typed: 'Yang muncul:', prob_switching: 'mengganti bahasa...', prob_toggle: 'Anda mulai mengetik tanpa tahu bahasa aktif, menghapus, mengganti, lalu mengetik ulang.', feat_headline: 'Satu tombol. Satu bahasa. Selalu.', how_headline: 'Cara kerja', step1_title: 'Atur tombol', step1_desc: 'Buka LangKey dari menu bar dan tetapkan bahasa untuk setiap tombol.', step2_title: 'Ketuk untuk beralih', step2_desc: 'Ketuk tombol bahasa yang dibutuhkan.', step3_title: 'Mengetik dengan yakin', step3_desc: 'Anda selalu tahu bahasa input yang aktif.', coming_headline: 'Segera hadir', coming_sub: 'LangKey sedang dalam persiapan akhir peluncuran.', price_req: 'Memerlukan macOS 14.0 atau lebih baru · Izin Aksesibilitas diperlukan', footer_tagline: 'Utilitas macOS untuk pengguna multibahasa.' },
+  ms: { title: 'LangKey — Taip dalam bahasa yang betul setiap kali.', nav_coming_soon: 'Akan datang', hero_headline: 'Taip setiap kali<br><em>dalam bahasa yang betul.</em>', hero_sub: 'LangKey menetapkan satu bahasa input kepada setiap kekunci pengubah.', hero_cta2: 'Lihat cara ia berfungsi', hero_badge: 'macOS 14+ · Akan datang', prob_label: 'Masalah', prob_headline: 'Pernah berlaku?', prob_without: 'Tanpa LangKey', prob_with: 'Dengan LangKey', prob_intended: 'Anda mahu taip:', prob_typed: 'Yang keluar:', prob_switching: 'menukar bahasa...', prob_toggle: 'Anda mula menaip tanpa tahu bahasa aktif, padam, tukar dan taip semula.', feat_headline: 'Satu kekunci. Satu bahasa. Sentiasa.', how_headline: 'Cara ia berfungsi', step1_title: 'Tetapkan kekunci', step1_desc: 'Buka LangKey dari bar menu dan tetapkan bahasa untuk setiap kekunci.', step2_title: 'Ketik untuk tukar', step2_desc: 'Ketik kekunci bahasa yang diperlukan.', step3_title: 'Taip dengan yakin', step3_desc: 'Anda sentiasa tahu bahasa yang aktif.', coming_headline: 'Akan datang', coming_sub: 'LangKey sedang dalam persediaan akhir.', price_req: 'Memerlukan macOS 14.0 atau lebih baharu · Kebenaran Kebolehcapaian diperlukan', footer_tagline: 'Utiliti macOS untuk pengguna berbilang bahasa.' },
+  th: { title: 'LangKey — พิมพ์ด้วยภาษาที่ถูกต้องทุกครั้ง', nav_coming_soon: 'เร็ว ๆ นี้', hero_headline: 'พิมพ์ด้วย<br><em>ภาษาที่ถูกต้องทุกครั้ง</em>', hero_sub: 'LangKey กำหนดภาษาให้แต่ละปุ่ม modifier เพื่อลดการสลับซ้ำและพิมพ์ผิดภาษา', hero_cta2: 'ดูวิธีทำงาน', hero_badge: 'macOS 14+ · เร็ว ๆ นี้', prob_label: 'ปัญหา', prob_headline: 'เคยเจอแบบนี้ไหม?', prob_without: 'ไม่มี LangKey', prob_with: 'มี LangKey', prob_intended: 'ตั้งใจพิมพ์:', prob_typed: 'ที่ออกมา:', prob_switching: 'กำลังเปลี่ยนภาษา...', prob_toggle: 'เริ่มพิมพ์โดยไม่รู้ภาษาปัจจุบัน แล้วต้องลบ เปลี่ยนภาษา และพิมพ์ใหม่', feat_headline: 'หนึ่งปุ่ม หนึ่งภาษา เสมอ', how_headline: 'วิธีทำงาน', step1_title: 'ตั้งค่าปุ่ม', step1_desc: 'เปิด LangKey จากแถบเมนู แล้วกำหนดภาษาให้แต่ละปุ่ม', step2_title: 'แตะเพื่อสลับ', step2_desc: 'แตะปุ่มของภาษาที่ต้องการ', step3_title: 'พิมพ์อย่างมั่นใจ', step3_desc: 'รู้เสมอว่ากำลังใช้ภาษาใด', coming_headline: 'เร็ว ๆ นี้', coming_sub: 'LangKey อยู่ในขั้นตอนเตรียมเปิดตัว', price_req: 'ต้องใช้ macOS 14.0 ขึ้นไป · ต้องอนุญาต Accessibility', footer_tagline: 'ยูทิลิตี macOS สำหรับผู้ใช้หลายภาษา' },
+  vi: { title: 'LangKey — Luôn gõ đúng ngôn ngữ.', nav_coming_soon: 'Sắp ra mắt', hero_headline: 'Luôn gõ<br><em>đúng ngôn ngữ.</em>', hero_sub: 'LangKey gán một ngôn ngữ nhập cho từng phím bổ trợ.', hero_cta2: 'Xem cách hoạt động', hero_badge: 'macOS 14+ · Sắp ra mắt', prob_label: 'Vấn đề', prob_headline: 'Bạn có gặp tình huống này?', prob_without: 'Không có LangKey', prob_with: 'Có LangKey', prob_intended: 'Bạn muốn gõ:', prob_typed: 'Kết quả:', prob_switching: 'đang đổi ngôn ngữ...', prob_toggle: 'Bạn bắt đầu gõ mà không biết ngôn ngữ hiện tại, xóa, đổi rồi gõ lại.', feat_headline: 'Một phím. Một ngôn ngữ. Luôn vậy.', how_headline: 'Cách hoạt động', step1_title: 'Gán phím', step1_desc: 'Mở LangKey từ thanh menu và gán ngôn ngữ cho từng phím.', step2_title: 'Chạm để đổi', step2_desc: 'Chạm phím của ngôn ngữ bạn cần.', step3_title: 'Gõ tự tin', step3_desc: 'Bạn luôn biết ngôn ngữ nào đang hoạt động.', coming_headline: 'Sắp ra mắt', coming_sub: 'LangKey đang trong giai đoạn chuẩn bị cuối cùng.', price_req: 'Yêu cầu macOS 14.0 trở lên · Cần quyền Trợ năng', footer_tagline: 'Tiện ích macOS cho người dùng đa ngôn ngữ.' },
+});
 
 function updateClock() {
   const el = document.getElementById('mockupClock');
@@ -1674,27 +1726,84 @@ function updateClock() {
 }
 
 function detectLang() {
-  const nav = (navigator.language || 'en').toLowerCase();
-  if (nav.startsWith('ko')) return 'ko';
-  if (nav.startsWith('ja')) return 'ja';
-  if (nav.startsWith('zh-tw') || nav.startsWith('zh-hk') || nav.startsWith('zh-hant')) return 'zh-hant';
-  if (nav.startsWith('zh')) return 'zh-hans';
+  const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+  for (const raw of prefs) {
+    const nav = raw.toLowerCase();
+    if (nav.startsWith('zh-tw') || nav.startsWith('zh-hk') || nav.startsWith('zh-hant')) return 'zh-hant';
+    if (nav.startsWith('zh')) return 'zh-hans';
+    if (nav.startsWith('pt-br')) return 'pt-br';
+    if (nav.startsWith('pt')) return 'pt-pt';
+    if (langMeta[nav]) return nav;
+    const base = nav.split('-')[0];
+    if (langMeta[base]) return base;
+  }
   return 'en';
 }
 
 let currentLang = detectLang();
 
+const languageProfiles = {
+  en: { flag: getEnglishFlag(), name: 'English', input: 'ABC', sampleText: 'I am a student', wrong: 'sksms', right: '나는' },
+  ko: { flag: '🇰🇷', name: '한국어', input: '두벌식', sampleText: '나는 학생입니다', wrong: 'sksms', right: '나는' },
+  ja: { flag: '🇯🇵', name: '日本語', input: 'ローマ字', sampleText: 'わたしは学生です', wrong: 'watashi', right: 'わたし' },
+  'zh-hans': { flag: '🇨🇳', name: '中文', input: '拼音', sampleText: '我是学生', wrong: 'wo shi', right: '我是' },
+  'zh-hant': { flag: '🇨🇳', name: '繁體中文', input: '注音', sampleText: '我是學生', wrong: 'xue xi', right: '學習' },
+  es: { flag: '🇪🇸', name: 'Español', input: 'Español', sampleText: 'Soy estudiante', wrong: 'soy estudiante', right: 'Soy estudiante' },
+  fr: { flag: '🇫🇷', name: 'Français', input: 'Français', sampleText: 'Je suis étudiant', wrong: 'je suis etudiant', right: 'Je suis étudiant' },
+  de: { flag: '🇩🇪', name: 'Deutsch', input: 'Deutsch', sampleText: 'Ich bin Student', wrong: 'ich bin student', right: 'Ich bin Student' },
+  it: { flag: '🇮🇹', name: 'Italiano', input: 'Italiano', sampleText: 'Sono uno studente', wrong: 'sono uno studente', right: 'Sono uno studente' },
+  'pt-br': { flag: '🇧🇷', name: 'Português', input: 'Português', sampleText: 'Sou estudante', wrong: 'sou estudante', right: 'Sou estudante' },
+  'pt-pt': { flag: '🇵🇹', name: 'Português', input: 'Português', sampleText: 'Sou estudante', wrong: 'sou estudante', right: 'Sou estudante' },
+  nl: { flag: '🇳🇱', name: 'Nederlands', input: 'Nederlands', sampleText: 'Ik ben student', wrong: 'ik ben student', right: 'Ik ben student' },
+  sv: { flag: '🇸🇪', name: 'Svenska', input: 'Svenska', sampleText: 'Jag är student', wrong: 'jag ar student', right: 'Jag är student' },
+  pl: { flag: '🇵🇱', name: 'Polski', input: 'Polski', sampleText: 'Jestem studentem', wrong: 'jestem studentem', right: 'Jestem studentem' },
+  tr: { flag: '🇹🇷', name: 'Türkçe', input: 'Türkçe', sampleText: 'Öğrenciyim', wrong: 'ogrenciyim', right: 'Öğrenciyim' },
+  ru: { flag: '🇷🇺', name: 'Русский', input: 'Русская', sampleText: 'Я студент', wrong: 'ya student', right: 'Я студент' },
+  uk: { flag: '🇺🇦', name: 'Українська', input: 'Українська', sampleText: 'Я студент', wrong: 'ya student', right: 'Я студент' },
+  ar: { flag: '🇸🇦', name: 'العربية', input: 'العربية', sampleText: 'أنا طالب', wrong: 'ana talib', right: 'أنا طالب' },
+  he: { flag: '🇮🇱', name: 'עברית', input: 'עברית', sampleText: 'אני סטודנט', wrong: 'ani student', right: 'אני סטודנט' },
+  hi: { flag: '🇮🇳', name: 'हिन्दी', input: 'देवनागरी', sampleText: 'मैं विद्यार्थी हूँ', wrong: 'main vidyarthi hun', right: 'मैं विद्यार्थी हूँ' },
+  id: { flag: '🇮🇩', name: 'Indonesia', input: 'Indonesia', sampleText: 'Saya pelajar', wrong: 'saya pelajar', right: 'Saya pelajar' },
+  ms: { flag: '🇲🇾', name: 'Melayu', input: 'Melayu', sampleText: 'Saya pelajar', wrong: 'saya pelajar', right: 'Saya pelajar' },
+  th: { flag: '🇹🇭', name: 'ไทย', input: 'ไทย', sampleText: 'ฉันเป็นนักเรียน', wrong: 'chan pen nakrian', right: 'ฉันเป็นนักเรียน' },
+  vi: { flag: '🇻🇳', name: 'Tiếng Việt', input: 'Tiếng Việt', sampleText: 'Tôi là sinh viên', wrong: 'toi la sinh vien', right: 'Tôi là sinh viên' },
+};
+
+function makeLang(flag, name, input) {
+  return [flag, name, input];
+}
+
+function makeNewLanguageMockup(lang) {
+  const p = languageProfiles[lang] || languageProfiles.en;
+  return {
+    activeKey: 'LS',
+    current: `${p.flag} ${p.name}`,
+    menubar: `${p.flag} ⌨️`,
+    ls: makeLang(p.flag, p.name, p.input),
+    rs: makeLang('🇰🇷', '한국어', '두벌식'),
+    lc: makeLang('🇨🇦', 'English', 'ABC'),
+    rc: makeLang('🇯🇵', '日本語', 'ローマ字'),
+    overlay: [p.flag, p.name],
+    sampleText: p.sampleText,
+    addLang: i18n[lang]?.nav_coming_soon === i18n.ja.nav_coming_soon ? '言語を追加...' : 'Add Language...',
+    quit: 'Quit LangKey',
+  };
+}
+
 const mockupData = {
-  en:        { current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: 'Add Language...', quit: 'Quit LangKey' },
-  ko:        { current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: '언어 추가...',       quit: 'LangKey 종료' },
-  ja:        { current: '🇯🇵 日本語',   menubar: '🇯🇵 ⌨️', rs: ['🇯🇵','日本語','ローマ字'],   lc: ['🇰🇷','한국어','두벌식'],  rc: ['🇨🇳','中文','拼音'],    overlay: ['🇯🇵','日本語'],   sampleText: 'わたしは学生です', addLang: '言語を追加...',      quit: 'LangKey を終了' },
-  'zh-hans': { current: '🇨🇳 中文',     menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','中文','拼音'],         lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','中文'],     sampleText: '我是学生',       addLang: '添加语言...',        quit: '退出 LangKey' },
-  'zh-hant': { current: '🇨🇳 繁體中文', menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','繁體中文','注音'],      lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','繁體中文'], sampleText: '我是學生',       addLang: '新增語言...',        quit: '結束 LangKey' },
+  en:        { ...makeNewLanguageMockup('en'), addLang: 'Add Language...', quit: 'Quit LangKey' },
+  ko:        { activeKey: 'RS', current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: '언어 추가...',       quit: 'LangKey 종료' },
+  ja:        { activeKey: 'RS', current: '🇯🇵 日本語',   menubar: '🇯🇵 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇯🇵','日本語','ローマ字'],   lc: ['🇰🇷','한국어','두벌식'],  rc: ['🇨🇳','中文','拼音'],    overlay: ['🇯🇵','日本語'],   sampleText: 'わたしは学生です', addLang: '言語を追加...',      quit: 'LangKey を終了' },
+  'zh-hans': { activeKey: 'RS', current: '🇨🇳 中文',     menubar: '🇨🇳 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇨🇳','中文','拼音'],         lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','中文'],     sampleText: '我是学生',       addLang: '添加语言...',        quit: '退出 LangKey' },
+  'zh-hant': { activeKey: 'RS', current: '🇨🇳 繁體中文', menubar: '🇨🇳 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇨🇳','繁體中文','注音'],      lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','繁體中文'], sampleText: '我是學生',       addLang: '新增語言...',        quit: '結束 LangKey' },
 };
 
 function updateMockup(lang) {
-  const d = mockupData[lang] || mockupData.en;
+  const d = mockupData[lang] || makeNewLanguageMockup(lang);
   document.getElementById('mockupMenubarIcon').textContent = d.menubar;
+  document.getElementById('mockupLSFlag').textContent = d.ls[0];
+  document.getElementById('mockupLSName').textContent = d.ls[1];
+  document.getElementById('mockupLSSub').textContent = d.ls[2];
   document.getElementById('mockupRSFlag').textContent = d.rs[0];
   document.getElementById('mockupRSName').textContent = d.rs[1];
   document.getElementById('mockupRSSub').textContent = d.rs[2];
@@ -1706,11 +1815,16 @@ function updateMockup(lang) {
   document.getElementById('mockupRCSub').textContent = d.rc[2];
   document.getElementById('mockupOverlayFlag').textContent = d.overlay[0];
   document.getElementById('mockupOverlayName').textContent = d.overlay[1];
+  ['LS', 'RS', 'LC', 'RC'].forEach(key => {
+    document.getElementById(`mockup${key}Cell`).classList.toggle('active', d.activeKey === key);
+  });
 
   // How It Works section
+  document.getElementById('howLS').textContent = d.ls[0] + ' ' + d.ls[1];
   document.getElementById('howRS').textContent = d.rs[0] + ' ' + d.rs[1];
   document.getElementById('howLC').textContent = d.lc[0] + ' ' + d.lc[1];
   document.getElementById('howRC').textContent = d.rc[0] + ' ' + d.rc[1];
+  document.getElementById('howKeyCap').textContent = d.activeKey === 'LS' ? 'L-Shift ⇧' : 'R-Shift ⇧';
   document.getElementById('howBadgeFlag').textContent = d.overlay[0];
   document.getElementById('howBadgeName').textContent = d.overlay[1];
   document.getElementById('howSampleText').textContent = d.sampleText;
@@ -1720,10 +1834,11 @@ function updateMockup(lang) {
 
 function applyLang(lang) {
   currentLang = lang;
-  const t = i18n[lang];
-  const meta = langMeta[lang];
+  const t = { ...i18n.en, ...(i18n[lang] || {}) };
+  const meta = langMeta[lang] || langMeta.en;
 
   document.documentElement.lang = meta.html;
+  document.documentElement.dir = 'ltr';
   document.title = t.title;
   document.getElementById('currentLangFlag').textContent = meta.flag;
   document.getElementById('currentLangCode').textContent = meta.code;
@@ -1744,6 +1859,13 @@ function applyLang(lang) {
 
 function toggleLangDropdown() {
   document.getElementById('langDropdown').classList.toggle('open');
+}
+
+function renderLangOptions() {
+  const dropdown = document.getElementById('langDropdown');
+  dropdown.innerHTML = Object.entries(langMeta).map(([key, meta]) => (
+    `<div class="lang-option" data-lang="${key}" onclick="setLang('${key}')">${meta.flag} ${meta.code}</div>`
+  )).join('');
 }
 
 function setLang(lang) {
@@ -1773,7 +1895,14 @@ let demoRunning = false;
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function updateDemoContent(lang) {
-  currentDemo = demoExamples[lang] || demoExamples.en;
+  const profile = languageProfiles[lang] || languageProfiles.en;
+  currentDemo = demoExamples[lang] || {
+    wrong: profile.wrong,
+    right: profile.right,
+    flag: profile.flag,
+    name: profile.name,
+    intended: profile.right,
+  };
   document.getElementById('demoIntendedWord').textContent = currentDemo.intended;
   document.getElementById('demoBadgeFlag').textContent = currentDemo.flag;
   document.getElementById('demoBadgeName').textContent = currentDemo.name;
@@ -1888,7 +2017,7 @@ function initFadeUps() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-document.getElementById('enOptionFlag').textContent = getEnglishFlag();
+renderLangOptions();
 applyLang(currentLang);
 initFadeUps();
 startDemoLoop();
