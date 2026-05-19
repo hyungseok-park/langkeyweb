@@ -412,13 +412,6 @@ h1 em {
   color: var(--text);
 }
 
-.popup-current {
-  font-size: 12px;
-  color: var(--text2);
-  background: rgba(255,255,255,0.06);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
 
 .popup-grid {
   display: grid;
@@ -1165,7 +1158,7 @@ footer {
         <span style="font-size:10px;margin-left:2px;color:var(--text3)">▾</span>
       </button>
       <div class="lang-dropdown" id="langDropdown">
-        <div class="lang-option" data-lang="en" onclick="setLang('en')">🇺🇸 EN</div>
+        <div class="lang-option" data-lang="en" onclick="setLang('en')"><span id="enOptionFlag">🇺🇸</span> EN</div>
         <div class="lang-option" data-lang="ko" onclick="setLang('ko')">🇰🇷 한국어</div>
         <div class="lang-option" data-lang="ja" onclick="setLang('ja')">🇯🇵 日本語</div>
         <div class="lang-option" data-lang="zh-hans" onclick="setLang('zh-hans')">🇨🇳 简体</div>
@@ -1221,7 +1214,6 @@ footer {
                 <span>⌨️</span>
                 <span>LangKey</span>
               </div>
-              <div class="popup-current" id="mockupCurrent">🇰🇷 한국어</div>
             </div>
             <div class="popup-grid">
               <div class="mapping-cell">
@@ -1461,6 +1453,19 @@ footer {
 </footer>
 
 <script>
+// ── English region flag ───────────────────────────────────────────────────────
+function getEnglishFlag() {
+  const nav = (navigator.language || 'en-US').toLowerCase();
+  if (nav.startsWith('en-gb')) return '🇬🇧';
+  if (nav.startsWith('en-ca')) return '🇨🇦';
+  if (nav.startsWith('en-au')) return '🇦🇺';
+  if (nav.startsWith('en-nz')) return '🇳🇿';
+  if (nav.startsWith('en-ie')) return '🇮🇪';
+  if (nav.startsWith('en-za')) return '🇿🇦';
+  if (nav.startsWith('en-in')) return '🇮🇳';
+  return '🇺🇸';
+}
+
 // ── i18n ──────────────────────────────────────────────────────────────────────
 const i18n = {
   en: {
@@ -1501,157 +1506,157 @@ const i18n = {
     footer_copy: '© 2025 LangKey',
   },
   ko: {
-    title: 'LangKey — 언제나 올바른 언어로.',
+    title: 'LangKey — 언제나 원하는 언어로 입력하세요.',
     nav_coming_soon: '출시 예정',
-    hero_headline: '언제나<br><em>올바른 언어로.</em>',
-    hero_sub: 'LangKey는 각 modifier 키에 언어를 지정합니다. 토글도 없고, 언어 실수도 없습니다.',
+    hero_headline: '매번 원하는<br><em>언어로 입력하세요.</em>',
+    hero_sub: 'LangKey는 각 보조 키에 입력 언어를 하나씩 지정합니다. 반복 전환 없이, 엉뚱한 언어로 입력하는 실수를 줄여줍니다.',
     hero_cta2: '작동 방식 보기',
     hero_badge: 'macOS 14+ · 출시 예정',
     prob_label: '문제',
     prob_headline: '이런 경험 있으신가요?',
-    prob_without: 'LangKey 없을 때',
-    prob_with: 'LangKey 설치 후',
-    prob_intended: '입력하려 했던 것:',
-    prob_typed: '실제 과정:',
+    prob_without: 'LangKey 없이',
+    prob_with: 'LangKey 사용 시',
+    prob_intended: '입력하려던 내용:',
+    prob_typed: '실제로 입력된 내용:',
     prob_switching: '언어 전환 중...',
-    prob_toggle: '현재 언어를 모른 채 타이핑을 시작합니다. 잘못된 걸 발견하면 지우고, 언어 바꾸고, 다시 타이핑합니다. 매번.',
-    feat_headline: '키 하나, 언어 하나. 언제나.',
+    prob_toggle: '현재 입력 언어를 확인하지 못한 채 타이핑을 시작합니다. 잘못 입력된 것을 보고 지운 뒤, 언어를 바꾸고 다시 입력합니다. 매번 반복됩니다.',
+    feat_headline: '키 하나에 언어 하나. 항상 그대로.',
     feat1_title: '최대 4개 언어',
-    feat1_desc: 'Left ⇧, Right ⇧, Left ⌃, Right ⌃을 각각 원하는 입력 소스에 매핑하세요.',
-    feat2_title: '토글 없음',
-    feat2_desc: '각 키는 하나의 언어에 전용됩니다. Right ⇧는 언제나 한국어. 추측도 없고 놀라움도 없습니다.',
-    feat3_title: '즉각적인 시각 피드백',
-    feat3_desc: '전환할 때마다 언어 국기와 이름이 화면에 잠깐 표시됩니다. 언제나 현재 언어를 알 수 있습니다.',
+    feat1_desc: '왼쪽 ⇧, 오른쪽 ⇧, 왼쪽 ⌃, 오른쪽 ⌃에 원하는 입력 소스를 각각 지정하세요.',
+    feat2_title: '반복 전환 없이',
+    feat2_desc: '각 키는 하나의 언어만 담당합니다. 오른쪽 ⇧는 언제나 한국어입니다. 현재 언어를 추측할 필요가 없습니다.',
+    feat3_title: '즉시 보이는 전환 상태',
+    feat3_desc: '언어를 바꿀 때마다 화면에 국기와 언어 이름이 잠깐 표시됩니다. 지금 어떤 언어인지 바로 알 수 있습니다.',
     feat4_title: '단축키도 그대로',
-    feat4_desc: '깨끗하고 빠른 탭(0.3초 미만)에만 반응합니다. Cmd+Shift, Ctrl+C 등 모든 단축키가 정상 작동합니다.',
+    feat4_desc: '다른 키와 조합하지 않은 빠른 탭(0.3초 미만)에만 반응합니다. Cmd+Shift, Ctrl+C 같은 기존 단축키는 그대로 사용할 수 있습니다.',
     how_headline: '작동 방식',
-    step1_title: '키에 언어 매핑',
-    step1_desc: '메뉴바에서 LangKey를 열고 각 modifier 키(최대 4개)에 입력 언어를 지정하세요.',
+    step1_title: '키에 언어 지정',
+    step1_desc: '메뉴 막대에서 LangKey를 열고 각 보조 키(최대 4개)에 입력 언어를 지정하세요.',
     step2_title: '탭으로 전환',
-    step2_desc: '필요한 언어의 modifier 키를 탭하세요. 잠깐 나타나는 오버레이가 현재 언어를 확인해 줍니다.',
-    step3_title: '자신 있게 타이핑',
-    step3_desc: '현재 어떤 언어인지 정확히 알 수 있습니다. 잘못된 언어로 입력하는 일이 없어집니다.',
+    step2_desc: '필요한 언어가 지정된 보조 키를 가볍게 탭하세요. 잠깐 나타나는 오버레이로 전환된 언어를 확인할 수 있습니다.',
+    step3_title: '안심하고 입력',
+    step3_desc: '지금 어떤 언어로 입력 중인지 확실히 알 수 있습니다. 엉뚱한 언어로 입력하는 실수가 줄어듭니다.',
     coming_headline: '출시 준비 중',
-    coming_sub: 'LangKey가 곧 출시됩니다. 무료로 체험할 수 있으며, 출시 시 일회 구매 라이선스도 제공될 예정입니다.',
+    coming_sub: 'LangKey는 출시를 앞두고 마지막 준비 중입니다. 무료로 체험할 수 있고, 출시 시 1회 구매 라이선스를 제공할 예정입니다.',
     price_req: 'macOS 14.0 이상 필요 · 손쉬운 사용 권한 필요',
     footer_tagline: '다국어 사용자를 위한 macOS 유틸리티.',
     footer_copy: '© 2025 LangKey',
   },
   ja: {
-    title: 'LangKey — いつも正しい言語で。',
-    nav_coming_soon: '近日公開',
-    hero_headline: 'いつも<br><em>正しい言語で。</em>',
-    hero_sub: 'LangKeyは各モディファイアキーに言語を割り当てます。トグルも誤入力もなし。',
+    title: 'LangKey — いつでも使いたい言語で入力。',
+    nav_coming_soon: 'まもなく公開',
+    hero_headline: 'いつでも<br><em>使いたい言語で入力。</em>',
+    hero_sub: 'LangKeyは、修飾キーごとに入力言語を割り当てます。何度も切り替えたり、別の言語で入力してしまったりする手間を減らします。',
     hero_cta2: '仕組みを見る',
-    hero_badge: 'macOS 14+ · 近日公開',
-    prob_label: '問題',
+    hero_badge: 'macOS 14+ · まもなく公開',
+    prob_label: 'よくある悩み',
     prob_headline: 'こんな経験ありますか？',
-    prob_without: 'LangKeyなしの場合',
-    prob_with: 'LangKey導入後',
-    prob_intended: '入力しようとしたもの:',
-    prob_typed: '実際の流れ:',
+    prob_without: 'LangKeyなし',
+    prob_with: 'LangKeyあり',
+    prob_intended: '入力したかった文字:',
+    prob_typed: '実際に入力された文字:',
     prob_switching: '言語切り替え中...',
-    prob_toggle: '今の言語を確認せずに入力を始めます。気づいたら削除して、言語を切り替えて、また入力し直します。毎回。',
-    feat_headline: 'キーひとつ、言語ひとつ。いつでも。',
+    prob_toggle: '現在の入力言語が分からないまま入力を始めてしまう。間違いに気づいたら削除し、言語を切り替えて、また入力し直す。その繰り返しです。',
+    feat_headline: '1つのキーに、1つの言語を。',
     feat1_title: '最大4言語',
-    feat1_desc: 'Left ⇧、Right ⇧、Left ⌃、Right ⌃を好きな入力ソースにマッピング。',
-    feat2_title: 'トグル不要',
-    feat2_desc: '各キーは専用です。Right ⇧は常に日本語。迷いも驚きもありません。',
-    feat3_title: '即座の視覚フィードバック',
-    feat3_desc: '切り替えるたびに国旗と言語名が画面に一瞬表示されます。今どの言語かを常に把握できます。',
+    feat1_desc: '左⇧、右⇧、左⌃、右⌃に、好きな入力ソースをそれぞれ割り当てられます。',
+    feat2_title: '循環切り替えなし',
+    feat2_desc: '各キーは特定の言語専用です。右⇧はいつでも日本語。今どの言語かを推測する必要はありません。',
+    feat3_title: '切り替えがすぐ分かる',
+    feat3_desc: '切り替えるたびに、国旗と言語名が画面に短く表示されます。今の入力言語をすぐ確認できます。',
     feat4_title: 'ショートカットもそのまま',
-    feat4_desc: '素早いタップ（0.3秒未満）にのみ反応します。Cmd+Shift、Ctrl+Cなど全てのショートカットは通常通り機能します。',
+    feat4_desc: 'ほかのキーと組み合わせない短いタップ（0.3秒未満）にだけ反応します。Cmd+ShiftやCtrl+Cなど、いつものショートカットはそのまま使えます。',
     how_headline: '仕組み',
-    step1_title: 'キーに言語を割り当て',
-    step1_desc: 'メニューバーからLangKeyを開き、各モディファイアキー（最大4つ）に入力言語を割り当てます。',
+    step1_title: 'キーに言語を設定',
+    step1_desc: 'メニューバーからLangKeyを開き、各修飾キー（最大4つ）に入力言語を割り当てます。',
     step2_title: 'タップで切り替え',
-    step2_desc: '必要な言語のモディファイアキーをタップします。オーバーレイが現在の言語を確認してくれます。',
-    step3_title: '自信を持って入力',
-    step3_desc: '今どの言語かを正確に把握できます。誤った言語で入力してしまうことはもうありません。',
-    coming_headline: '近日公開予定',
-    coming_sub: 'LangKeyはまもなくリリース予定です。無料でお試しいただけ、リリース時に買い切りライセンスもご用意します。',
-    price_req: 'macOS 14.0以降が必要・アクセシビリティ権限が必要',
+    step2_desc: '使いたい言語に対応する修飾キーをタップします。短く表示されるオーバーレイで、切り替え先を確認できます。',
+    step3_title: '安心して入力',
+    step3_desc: '今どの言語で入力しているかが分かります。別の言語で入力してしまうミスを減らせます。',
+    coming_headline: 'まもなく公開',
+    coming_sub: 'LangKeyは公開に向けて最終準備中です。無料で試用でき、公開時には買い切りライセンスも提供予定です。',
+    price_req: 'macOS 14.0以降が必要 · アクセシビリティ権限が必要',
     footer_tagline: '多言語ユーザーのためのmacOSユーティリティ。',
     footer_copy: '© 2025 LangKey',
   },
   'zh-hans': {
-    title: 'LangKey — 每次都用正确的语言。',
+    title: 'LangKey — 每次都用想要的语言输入。',
     nav_coming_soon: '即将推出',
-    hero_headline: '每次都用<br><em>正确的语言。</em>',
-    hero_sub: 'LangKey 为每个修饰键指定一种语言。无需切换，不再输错。',
-    hero_cta2: '查看工作原理',
+    hero_headline: '每次都用<br><em>想要的语言输入。</em>',
+    hero_sub: 'LangKey 可为每个修饰键绑定一种输入语言，减少反复切换，也减少输错语言的情况。',
+    hero_cta2: '了解使用方式',
     hero_badge: 'macOS 14+ · 即将推出',
-    prob_label: '问题',
-    prob_headline: '这种情况是否似曾相识？',
-    prob_without: '没有 LangKey 时',
-    prob_with: '安装 LangKey 后',
-    prob_intended: '想输入的:',
-    prob_typed: '实际经过:',
+    prob_label: '常见问题',
+    prob_headline: '你是否也遇到过？',
+    prob_without: '没有 LangKey',
+    prob_with: '使用 LangKey',
+    prob_intended: '本想输入：',
+    prob_typed: '实际输入：',
     prob_switching: '切换语言中...',
-    prob_toggle: '不知道当前语言就开始输入。发现错了，删掉，切换，重新输入。每次都这样。',
-    feat_headline: '一键一语。永远如此。',
+    prob_toggle: '还没确认当前输入语言，就已经开始打字。发现不对后，只能删除、切换语言，再重新输入。这样的步骤总是一再发生。',
+    feat_headline: '一个键，对应一种语言。',
     feat1_title: '最多4种语言',
-    feat1_desc: '将 Left ⇧、Right ⇧、Left ⌃、Right ⌃ 各自映射到所需输入源。',
-    feat2_title: '无需循环切换',
-    feat2_desc: '每个键专用于一种语言。Right ⇧ 永远是中文。不再猜测，不再意外。',
-    feat3_title: '即时视觉反馈',
-    feat3_desc: '每次切换时，屏幕上会短暂显示国旗和语言名称。始终知道当前使用哪种语言。',
+    feat1_desc: '可将左⇧、右⇧、左⌃、右⌃分别绑定到不同输入源。',
+    feat2_title: '不用反复切换',
+    feat2_desc: '每个键只负责一种语言。右⇧始终是中文，不必再猜当前会切到哪里。',
+    feat3_title: '切换状态一目了然',
+    feat3_desc: '每次切换时，屏幕上会短暂显示国旗和语言名称，让你马上知道当前输入语言。',
     feat4_title: '快捷键照常工作',
-    feat4_desc: '仅响应干净的快速点击（< 0.3秒）。Cmd+Shift、Ctrl+C 等所有快捷键照常使用。',
-    how_headline: '工作原理',
-    step1_title: '映射按键',
-    step1_desc: '从菜单栏打开 LangKey，为每个修饰键（最多4个）分配输入语言。',
-    step2_title: '点击切换',
-    step2_desc: '点击所需语言的修饰键。短暂的提示会确认当前语言。',
-    step3_title: '自信地输入',
-    step3_desc: '您确切知道当前使用哪种语言。不再有输错语言的意外。',
+    feat4_desc: '只响应未与其他按键组合的快速轻点（&lt; 0.3 秒）。Cmd+Shift、Ctrl+C 等常用快捷键仍可照常使用。',
+    how_headline: '使用方式',
+    step1_title: '为按键绑定语言',
+    step1_desc: '从菜单栏打开 LangKey，为每个修饰键（最多4个）设置对应的输入语言。',
+    step2_title: '轻点即可切换',
+    step2_desc: '轻点对应语言的修饰键。短暂出现的浮层会确认已切换到哪种语言。',
+    step3_title: '安心输入',
+    step3_desc: '你能清楚知道当前正在使用哪种输入语言，从而减少输错语言的情况。',
     coming_headline: '即将推出',
-    coming_sub: 'LangKey 即将正式上线。可免费试用，上线时将提供一次性购买的终身授权。',
+    coming_sub: 'LangKey 正在进行上线前的最后准备。你可以免费试用，正式推出时也将提供一次性购买授权。',
     price_req: '需要 macOS 14.0 或更高版本 · 需要辅助功能权限',
     footer_tagline: '面向多语言用户的 macOS 工具。',
     footer_copy: '© 2025 LangKey',
   },
   'zh-hant': {
-    title: 'LangKey — 每次都用正確的語言。',
+    title: 'LangKey — 每次都用想要的語言輸入。',
     nav_coming_soon: '即將推出',
-    hero_headline: '每次都用<br><em>正確的語言。</em>',
-    hero_sub: 'LangKey 為每個修飾鍵指定一種語言。無需切換，不再輸錯。',
-    hero_cta2: '查看工作原理',
+    hero_headline: '每次都用<br><em>想要的語言輸入。</em>',
+    hero_sub: 'LangKey 可為每個修飾鍵綁定一種輸入語言，減少反覆切換，也減少打錯語言的情況。',
+    hero_cta2: '了解使用方式',
     hero_badge: 'macOS 14+ · 即將推出',
-    prob_label: '問題',
-    prob_headline: '這種情況是否似曾相識？',
-    prob_without: '沒有 LangKey 時',
-    prob_with: '安裝 LangKey 後',
-    prob_intended: '想輸入的:',
-    prob_typed: '實際經過:',
+    prob_label: '常見問題',
+    prob_headline: '你是否也遇過？',
+    prob_without: '沒有 LangKey',
+    prob_with: '使用 LangKey',
+    prob_intended: '原本想輸入：',
+    prob_typed: '實際輸入：',
     prob_switching: '切換語言中...',
-    prob_toggle: '不知道當前語言就開始輸入。發現錯了，刪掉，切換，重新輸入。每次都這樣。',
-    feat_headline: '一鍵一語。永遠如此。',
+    prob_toggle: '還沒確認目前的輸入語言，就已經開始打字。發現不對後，只能刪掉、切換語言，再重新輸入。這樣的步驟總是一再發生。',
+    feat_headline: '一個鍵，對應一種語言。',
     feat1_title: '最多4種語言',
-    feat1_desc: '將 Left ⇧、Right ⇧、Left ⌃、Right ⌃ 各自映射到所需輸入源。',
-    feat2_title: '無需循環切換',
-    feat2_desc: '每個鍵專用於一種語言。Right ⇧ 永遠是中文。不再猜測，不再意外。',
-    feat3_title: '即時視覺反饋',
-    feat3_desc: '每次切換時，螢幕上會短暫顯示國旗和語言名稱。始終知道當前使用哪種語言。',
+    feat1_desc: '可將左⇧、右⇧、左⌃、右⌃分別綁定到不同輸入來源。',
+    feat2_title: '不用反覆切換',
+    feat2_desc: '每個鍵只負責一種語言。右⇧始終是中文，不必再猜目前會切到哪裡。',
+    feat3_title: '切換狀態一目了然',
+    feat3_desc: '每次切換時，畫面上會短暫顯示國旗和語言名稱，讓你馬上知道目前的輸入語言。',
     feat4_title: '快捷鍵照常工作',
-    feat4_desc: '僅響應乾淨的快速點擊（< 0.3秒）。Cmd+Shift、Ctrl+C 等所有快捷鍵照常使用。',
-    how_headline: '工作原理',
-    step1_title: '映射按鍵',
-    step1_desc: '從選單列開啟 LangKey，為每個修飾鍵（最多4個）分配輸入語言。',
-    step2_title: '點擊切換',
-    step2_desc: '點擊所需語言的修飾鍵。短暫的提示會確認當前語言。',
-    step3_title: '自信地輸入',
-    step3_desc: '您確切知道當前使用哪種語言。不再有輸錯語言的意外。',
+    feat4_desc: '只回應未與其他按鍵組合的快速輕點（&lt; 0.3 秒）。Cmd+Shift、Ctrl+C 等常用快捷鍵仍可照常使用。',
+    how_headline: '使用方式',
+    step1_title: '為按鍵綁定語言',
+    step1_desc: '從選單列開啟 LangKey，為每個修飾鍵（最多4個）設定對應的輸入語言。',
+    step2_title: '輕點即可切換',
+    step2_desc: '輕點對應語言的修飾鍵。短暫出現的浮層會確認已切換到哪種語言。',
+    step3_title: '安心輸入',
+    step3_desc: '你能清楚知道目前正在使用哪種輸入語言，從而減少打錯語言的情況。',
     coming_headline: '即將推出',
-    coming_sub: 'LangKey 即將正式上線。可免費試用，上線時將提供一次性購買的終身授權。',
-    price_req: '需要 macOS 14.0 或更高版本 · 需要輔助功能權限',
-    footer_tagline: '面向多語言用戶的 macOS 工具。',
+    coming_sub: 'LangKey 正在進行上線前的最後準備。你可以免費試用，正式推出時也將提供一次性購買授權。',
+    price_req: '需要 macOS 14.0 或更新版本 · 需要輔助使用權限',
+    footer_tagline: '面向多語言使用者的 macOS 工具。',
     footer_copy: '© 2025 LangKey',
   },
 };
 
 const langMeta = {
-  en: { flag: '🇺🇸', code: 'EN', html: 'en' },
+  en: { flag: getEnglishFlag(), code: 'EN', html: 'en' },
   ko: { flag: '🇰🇷', code: '한국어', html: 'ko' },
   ja: { flag: '🇯🇵', code: '日本語', html: 'ja' },
   'zh-hans': { flag: '🇨🇳', code: '简体', html: 'zh-Hans' },
@@ -1684,13 +1689,12 @@ const mockupData = {
   ko:        { current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: '언어 추가...',       quit: 'LangKey 종료' },
   ja:        { current: '🇯🇵 日本語',   menubar: '🇯🇵 ⌨️', rs: ['🇯🇵','日本語','ローマ字'],   lc: ['🇰🇷','한국어','두벌식'],  rc: ['🇨🇳','中文','拼音'],    overlay: ['🇯🇵','日本語'],   sampleText: 'わたしは学生です', addLang: '言語を追加...',      quit: 'LangKey を終了' },
   'zh-hans': { current: '🇨🇳 中文',     menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','中文','拼音'],         lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','中文'],     sampleText: '我是学生',       addLang: '添加语言...',        quit: '退出 LangKey' },
-  'zh-hant': { current: '🇨🇳 繁體中文', menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','繁體中文','注音'],      lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','繁體中文'], sampleText: '我是學生',       addLang: '加入語言...',        quit: '結束 LangKey' },
+  'zh-hant': { current: '🇨🇳 繁體中文', menubar: '🇨🇳 ⌨️', rs: ['🇨🇳','繁體中文','注音'],      lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','繁體中文'], sampleText: '我是學生',       addLang: '新增語言...',        quit: '結束 LangKey' },
 };
 
 function updateMockup(lang) {
   const d = mockupData[lang] || mockupData.en;
   document.getElementById('mockupMenubarIcon').textContent = d.menubar;
-  document.getElementById('mockupCurrent').textContent = d.current;
   document.getElementById('mockupRSFlag').textContent = d.rs[0];
   document.getElementById('mockupRSName').textContent = d.rs[1];
   document.getElementById('mockupRSSub').textContent = d.rs[2];
@@ -1884,6 +1888,7 @@ function initFadeUps() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('enOptionFlag').textContent = getEnglishFlag();
 applyLang(currentLang);
 initFadeUps();
 startDemoLoop();
