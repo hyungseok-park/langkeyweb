@@ -172,6 +172,9 @@ nav {
 }
 .nav-cta:hover { background: var(--accent2); box-shadow: 0 0 28px rgba(124,109,250,0.5); transform: translateY(-1px); }
 .nav-coming-soon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 6px 14px;
   background: rgba(124,109,250,0.12);
   border: 1px solid rgba(124,109,250,0.3);
@@ -180,7 +183,10 @@ nav {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: all 0.15s;
 }
+.nav-coming-soon:hover { background: rgba(124,109,250,0.18); border-color: rgba(124,109,250,0.48); }
 
 /* ── HERO ── */
 .hero {
@@ -1083,6 +1089,11 @@ h2 {
   line-height: 1.7;
   margin-bottom: 12px;
 }
+.download-card-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
 .coming-soon-dot-row {
   display: flex;
   justify-content: center;
@@ -1176,7 +1187,7 @@ footer {
       </button>
       <div class="lang-dropdown" id="langDropdown"></div>
     </div>
-    <div class="nav-coming-soon" data-i18n="nav_coming_soon">Coming Soon</div>
+    <a href="/download/LangKey-1.0-2.dmg" class="nav-coming-soon" data-i18n="nav_download">Download</a>
   </div>
 </nav>
 
@@ -1192,14 +1203,18 @@ footer {
         <h1 data-i18n="hero_headline">Type in the Right Language.<br><em>Every Time.</em></h1>
         <p class="hero-sub" data-i18n="hero_sub">LangKey gives each modifier key its own language — no more toggling, no more wrong-language mistakes.</p>
         <div class="hero-actions">
-          <a href="#problem" class="btn-primary">
+          <a href="/download/LangKey-1.0-2.dmg" class="btn-primary">
+            <span data-i18n="hero_cta_download">Download Free</span>
+            <span>↓</span>
+          </a>
+          <a href="#problem" class="btn-ghost">
             <span data-i18n="hero_cta2">See How It Works</span>
             <span>→</span>
           </a>
         </div>
         <div class="hero-badge">
           <span style="font-size:15px;line-height:1;opacity:0.85;">&#xF8FF;</span>
-          <span data-i18n="hero_badge">macOS 14+ · Coming Soon</span>
+          <span data-i18n="download_badge">macOS 14+ · Free trial available</span>
         </div>
       </div>
 
@@ -1442,8 +1457,14 @@ footer {
         <span class="coming-soon-dot"></span>
         <span class="coming-soon-dot"></span>
       </div>
-      <h2 data-i18n="coming_headline">Coming Soon</h2>
-      <p data-i18n="coming_sub">LangKey is in final preparation for launch. Free to try, with a one-time license available at launch.</p>
+      <h2 data-i18n="download_headline">Download LangKey</h2>
+      <p data-i18n="download_sub">LangKey is now available to try for free. Download the macOS app and start using dedicated language keys.</p>
+      <div class="download-card-actions">
+        <a href="/download/LangKey-1.0-2.dmg" class="btn-primary">
+          <span data-i18n="hero_cta_download">Download Free</span>
+          <span>↓</span>
+        </a>
+      </div>
       <p class="price-note" data-i18n="price_req">Requires macOS 14.0 or later · Accessibility permission required</p>
     </div>
   </div>
@@ -1482,10 +1503,13 @@ const i18n = {
   en: {
     title: 'LangKey — Type in the Right Language. Every Time.',
     nav_coming_soon: 'Coming Soon',
+    nav_download: 'Download',
     hero_headline: 'Type in the Right Language.<br><em>Every Time.</em>',
     hero_sub: 'LangKey gives each modifier key its own language — no more toggling, no more wrong-language mistakes.',
+    hero_cta_download: 'Download Free',
     hero_cta2: 'See How It Works',
     hero_badge: 'macOS 14+ · Coming Soon',
+    download_badge: 'macOS 14+ · Free trial available',
     prob_label: 'The Problem',
     prob_headline: 'Sound familiar?',
     prob_without: 'Without LangKey',
@@ -1512,6 +1536,8 @@ const i18n = {
     step3_desc: 'You know exactly which language you\'re in. No more wrong-language surprises.',
     coming_headline: 'Coming Soon',
     coming_sub: 'LangKey is in final preparation for launch. Free to try, with a one-time license available at launch.',
+    download_headline: 'Download LangKey',
+    download_sub: 'LangKey is now available to try for free. Download the macOS app and start using dedicated language keys.',
     price_req: 'Requires macOS 14.0 or later · Accessibility permission required',
     footer_tagline: 'A macOS utility for multilingual typists.',
     footer_copy: '© 2025 LangKey',
@@ -1519,10 +1545,13 @@ const i18n = {
   ko: {
     title: 'LangKey — 언제나 원하는 언어로 입력하세요.',
     nav_coming_soon: '출시 예정',
+    nav_download: '다운로드',
     hero_headline: '매번 원하는<br><em>언어로 입력하세요.</em>',
     hero_sub: 'LangKey는 각 보조 키에 입력 언어를 하나씩 지정합니다. 반복 전환 없이, 엉뚱한 언어로 입력하는 실수를 줄여줍니다.',
+    hero_cta_download: '무료 다운로드',
     hero_cta2: '작동 방식 보기',
     hero_badge: 'macOS 14+ · 출시 예정',
+    download_badge: 'macOS 14+ · 무료 체험 가능',
     prob_label: '문제',
     prob_headline: '이런 경험 있으신가요?',
     prob_without: 'LangKey 없이',
@@ -1549,6 +1578,8 @@ const i18n = {
     step3_desc: '지금 어떤 언어로 입력 중인지 확실히 알 수 있습니다. 엉뚱한 언어로 입력하는 실수가 줄어듭니다.',
     coming_headline: '출시 준비 중',
     coming_sub: 'LangKey는 출시를 앞두고 마지막 준비 중입니다. 무료로 체험할 수 있고, 출시 시 1회 구매 라이선스를 제공할 예정입니다.',
+    download_headline: 'LangKey 다운로드',
+    download_sub: 'LangKey를 이제 무료로 체험할 수 있습니다. macOS 앱을 다운로드하고 언어별 전용 키를 사용해 보세요.',
     price_req: 'macOS 14.0 이상 필요 · 손쉬운 사용 권한 필요',
     footer_tagline: '다국어 사용자를 위한 macOS 유틸리티.',
     footer_copy: '© 2025 LangKey',
@@ -1556,10 +1587,13 @@ const i18n = {
   ja: {
     title: 'LangKey — いつでも使いたい言語で入力。',
     nav_coming_soon: 'まもなく公開',
+    nav_download: 'ダウンロード',
     hero_headline: 'いつでも<br><em>使いたい言語で入力。</em>',
     hero_sub: 'LangKeyは、修飾キーごとに入力言語を割り当てます。何度も切り替えたり、別の言語で入力してしまったりする手間を減らします。',
+    hero_cta_download: '無料ダウンロード',
     hero_cta2: '仕組みを見る',
     hero_badge: 'macOS 14+ · まもなく公開',
+    download_badge: 'macOS 14+ · 無料で試用できます',
     prob_label: 'よくある悩み',
     prob_headline: 'こんな経験ありますか？',
     prob_without: 'LangKeyなし',
@@ -1586,6 +1620,8 @@ const i18n = {
     step3_desc: '今どの言語で入力しているかが分かります。別の言語で入力してしまうミスを減らせます。',
     coming_headline: 'まもなく公開',
     coming_sub: 'LangKeyは公開に向けて最終準備中です。無料で試用でき、公開時には買い切りライセンスも提供予定です。',
+    download_headline: 'LangKeyをダウンロード',
+    download_sub: 'LangKeyを無料で試用できるようになりました。macOSアプリをダウンロードして、言語専用キーを使い始めましょう。',
     price_req: 'macOS 14.0以降が必要 · アクセシビリティ権限が必要',
     footer_tagline: '多言語ユーザーのためのmacOSユーティリティ。',
     footer_copy: '© 2025 LangKey',
@@ -1593,10 +1629,13 @@ const i18n = {
   'zh-hans': {
     title: 'LangKey — 每次都用想要的语言输入。',
     nav_coming_soon: '即将推出',
+    nav_download: '下载',
     hero_headline: '每次都用<br><em>想要的语言输入。</em>',
     hero_sub: 'LangKey 可为每个修饰键绑定一种输入语言，减少反复切换，也减少输错语言的情况。',
+    hero_cta_download: '免费下载',
     hero_cta2: '了解使用方式',
     hero_badge: 'macOS 14+ · 即将推出',
+    download_badge: 'macOS 14+ · 可免费试用',
     prob_label: '常见问题',
     prob_headline: '你是否也遇到过？',
     prob_without: '没有 LangKey',
@@ -1623,6 +1662,8 @@ const i18n = {
     step3_desc: '你能清楚知道当前正在使用哪种输入语言，从而减少输错语言的情况。',
     coming_headline: '即将推出',
     coming_sub: 'LangKey 正在进行上线前的最后准备。你可以免费试用，正式推出时也将提供一次性购买授权。',
+    download_headline: '下载 LangKey',
+    download_sub: 'LangKey 现已可免费试用。下载 macOS 应用，开始使用专属语言按键。',
     price_req: '需要 macOS 14.0 或更高版本 · 需要辅助功能权限',
     footer_tagline: '面向多语言用户的 macOS 工具。',
     footer_copy: '© 2025 LangKey',
@@ -1630,10 +1671,13 @@ const i18n = {
   'zh-hant': {
     title: 'LangKey — 每次都用想要的語言輸入。',
     nav_coming_soon: '即將推出',
+    nav_download: '下載',
     hero_headline: '每次都用<br><em>想要的語言輸入。</em>',
     hero_sub: 'LangKey 可為每個修飾鍵綁定一種輸入語言，減少反覆切換，也減少打錯語言的情況。',
+    hero_cta_download: '免費下載',
     hero_cta2: '了解使用方式',
     hero_badge: 'macOS 14+ · 即將推出',
+    download_badge: 'macOS 14+ · 可免費試用',
     prob_label: '常見問題',
     prob_headline: '你是否也遇過？',
     prob_without: '沒有 LangKey',
@@ -1660,6 +1704,8 @@ const i18n = {
     step3_desc: '你能清楚知道目前正在使用哪種輸入語言，從而減少打錯語言的情況。',
     coming_headline: '即將推出',
     coming_sub: 'LangKey 正在進行上線前的最後準備。你可以免費試用，正式推出時也將提供一次性購買授權。',
+    download_headline: '下載 LangKey',
+    download_sub: 'LangKey 現已可免費試用。下載 macOS App，開始使用專屬語言按鍵。',
     price_req: '需要 macOS 14.0 或更新版本 · 需要輔助使用權限',
     footer_tagline: '面向多語言使用者的 macOS 工具。',
     footer_copy: '© 2025 LangKey',
@@ -1769,12 +1815,40 @@ const languageProfiles = {
   vi: { flag: '🇻🇳', name: 'Tiếng Việt', input: 'Tiếng Việt', sampleText: 'Tôi là sinh viên', wrong: 'toi la sinh vien', right: 'Tôi là sinh viên' },
 };
 
+const mockupFooterText = {
+  en: { addLang: 'Add Language...', quit: 'Quit LangKey' },
+  ko: { addLang: '언어 추가...', quit: 'LangKey 종료' },
+  ja: { addLang: '言語を追加...', quit: 'LangKey を終了' },
+  'zh-hans': { addLang: '添加语言...', quit: '退出 LangKey' },
+  'zh-hant': { addLang: '新增語言...', quit: '結束 LangKey' },
+  es: { addLang: 'Añadir idioma...', quit: 'Salir de LangKey' },
+  fr: { addLang: 'Ajouter une langue...', quit: 'Quitter LangKey' },
+  de: { addLang: 'Sprache hinzufügen...', quit: 'LangKey beenden' },
+  it: { addLang: 'Aggiungi lingua...', quit: 'Esci da LangKey' },
+  'pt-br': { addLang: 'Adicionar idioma...', quit: 'Sair do LangKey' },
+  'pt-pt': { addLang: 'Adicionar idioma...', quit: 'Sair do LangKey' },
+  nl: { addLang: 'Taal toevoegen...', quit: 'LangKey stoppen' },
+  sv: { addLang: 'Lägg till språk...', quit: 'Avsluta LangKey' },
+  pl: { addLang: 'Dodaj język...', quit: 'Zamknij LangKey' },
+  tr: { addLang: 'Dil ekle...', quit: 'LangKey’den çık' },
+  ru: { addLang: 'Добавить язык...', quit: 'Закрыть LangKey' },
+  uk: { addLang: 'Додати мову...', quit: 'Закрити LangKey' },
+  ar: { addLang: 'إضافة لغة...', quit: 'إنهاء LangKey' },
+  he: { addLang: 'הוסף שפה...', quit: 'צא מ-LangKey' },
+  hi: { addLang: 'भाषा जोड़ें...', quit: 'LangKey बंद करें' },
+  id: { addLang: 'Tambah Bahasa...', quit: 'Keluar LangKey' },
+  ms: { addLang: 'Tambah Bahasa...', quit: 'Keluar LangKey' },
+  th: { addLang: 'เพิ่มภาษา...', quit: 'ออกจาก LangKey' },
+  vi: { addLang: 'Thêm ngôn ngữ...', quit: 'Thoát LangKey' },
+};
+
 function makeLang(flag, name, input) {
   return [flag, name, input];
 }
 
 function makeNewLanguageMockup(lang) {
   const p = languageProfiles[lang] || languageProfiles.en;
+  const footer = mockupFooterText[lang] || mockupFooterText.en;
   return {
     activeKey: 'LS',
     current: `${p.flag} ${p.name}`,
@@ -1785,13 +1859,13 @@ function makeNewLanguageMockup(lang) {
     rc: makeLang('🇯🇵', '日本語', 'ローマ字'),
     overlay: [p.flag, p.name],
     sampleText: p.sampleText,
-    addLang: i18n[lang]?.nav_coming_soon === i18n.ja.nav_coming_soon ? '言語を追加...' : 'Add Language...',
-    quit: 'Quit LangKey',
+    addLang: footer.addLang,
+    quit: footer.quit,
   };
 }
 
 const mockupData = {
-  en:        { ...makeNewLanguageMockup('en'), addLang: 'Add Language...', quit: 'Quit LangKey' },
+  en:        { ...makeNewLanguageMockup('en') },
   ko:        { activeKey: 'RS', current: '🇰🇷 한국어',   menubar: '🇰🇷 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇰🇷','한국어','두벌식'],    lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇨🇳','中文','拼音'],    overlay: ['🇰🇷','한국어'],   sampleText: '나는 학생입니다', addLang: '언어 추가...',       quit: 'LangKey 종료' },
   ja:        { activeKey: 'RS', current: '🇯🇵 日本語',   menubar: '🇯🇵 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇯🇵','日本語','ローマ字'],   lc: ['🇰🇷','한국어','두벌식'],  rc: ['🇨🇳','中文','拼音'],    overlay: ['🇯🇵','日本語'],   sampleText: 'わたしは学生です', addLang: '言語を追加...',      quit: 'LangKey を終了' },
   'zh-hans': { activeKey: 'RS', current: '🇨🇳 中文',     menubar: '🇨🇳 ⌨️', ls: ['🇺🇸','English','ABC'], rs: ['🇨🇳','中文','拼音'],         lc: ['🇯🇵','日本語','ローマ字'], rc: ['🇰🇷','한국어','두벌식'], overlay: ['🇨🇳','中文'],     sampleText: '我是学生',       addLang: '添加语言...',        quit: '退出 LangKey' },
