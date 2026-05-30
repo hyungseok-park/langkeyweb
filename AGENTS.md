@@ -96,7 +96,11 @@ Left Shift는 항상 🇺🇸 English(ABC) 고정.
 ## 배포
 
 ```bash
-npx wrangler pages deploy .
+ASSET_DIR=/private/tmp/langkeyweb-assets
+rm -rf "$ASSET_DIR"
+mkdir -p "$ASSET_DIR"
+cp index.html _headers apple-touch-icon.png favicon-16x16.png favicon-32x32.png "$ASSET_DIR"/
+npx wrangler deploy --name langkeyweb --assets "$ASSET_DIR" --compatibility-date 2026-05-17 --old-asset-ttl 0
 ```
 
-또는 GitHub 저장소를 Cloudflare Pages 대시보드에 연결해 자동 배포.
+repo 루트를 `--assets .`로 직접 배포하지 않는다. `.git/`나 `.wrangler/` 같은 로컬 상태 파일이 asset으로 올라갈 수 있다.
