@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>LangKey — Type in the Right Language. Every Time.</title>
-<meta name="description" content="LangKey maps modifier keys to input languages. No more wrong-language typing. Up to 4 languages, each with its own dedicated key.">
+<meta name="description" content="LangKey maps modifier keys and custom shortcuts to input languages. No more wrong-language typing, no more blind toggling.">
 <meta name="theme-color" content="#07070f">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#07070f">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1373,8 +1373,8 @@ footer {
     <div class="features-grid">
       <div class="feature-card fade-up">
         <div class="feature-icon">🌐</div>
-        <div class="feature-title" data-i18n="feat1_title">Up to 4 Languages</div>
-        <div class="feature-desc" data-i18n="feat1_desc">Map Left ⇧, Right ⇧, Left ⌃, and Right ⌃ to any 4 input sources.</div>
+        <div class="feature-title" data-i18n="feat1_title">8 Built-In Keys</div>
+        <div class="feature-desc" data-i18n="feat1_desc">Map both sides of Shift, Control, Option, and Command, then add up to 10 custom key mappings.</div>
       </div>
       <div class="feature-card fade-up" style="transition-delay:0.05s">
         <div class="feature-icon">🎯</div>
@@ -1406,7 +1406,7 @@ footer {
         <div class="step-num">1</div>
         <div>
           <div class="step-title" data-i18n="step1_title">Map Your Keys</div>
-          <div class="step-desc" data-i18n="step1_desc">Open LangKey from the menu bar. Assign each modifier key (up to 4) to an input language.</div>
+          <div class="step-desc" data-i18n="step1_desc">Open LangKey from the menu bar. Assign input sources to 8 built-in modifier keys, or add custom key mappings.</div>
         </div>
         <div class="step-visual">
           <div class="mini-popup">
@@ -1475,11 +1475,11 @@ footer {
   <div class="container">
     <div class="footer-inner">
       <div class="logo">
-        <img class="logo-icon small" src="/apple-touch-icon.png" alt="" width="24" height="24">
-        LangKey
+        <img class="logo-icon small" src="/assets/stellarlab_logo.png" alt="" width="24" height="24">
+        StellarLab
       </div>
       <div class="footer-tagline" data-i18n="footer_tagline">A macOS utility for multilingual typists.</div>
-      <div class="footer-copy" data-i18n="footer_copy">© 2025 LangKey</div>
+      <div class="footer-copy" data-i18n="footer_copy">© 2026 StellarLab</div>
     </div>
   </div>
 </footer>
@@ -1519,8 +1519,8 @@ const i18n = {
     prob_switching: 'switching language...',
     prob_toggle: 'You start typing without knowing the current language. Realize it\'s wrong, delete, switch, then retype. Every time.',
     feat_headline: 'One Key. One Language. Always.',
-    feat1_title: 'Up to 4 Languages',
-    feat1_desc: 'Map Left ⇧, Right ⇧, Left ⌃, and Right ⌃ to any 4 input sources.',
+    feat1_title: '8 Built-In Keys',
+    feat1_desc: 'Map both sides of Shift, Control, Option, and Command, then add up to 10 custom key mappings.',
     feat2_title: 'No More Toggling',
     feat2_desc: 'Each key is dedicated. Tap Right ⇧ — it\'s always Korean. No guessing, no surprises.',
     feat3_title: 'Instant Visual Feedback',
@@ -1529,7 +1529,7 @@ const i18n = {
     feat4_desc: 'Only triggers on a clean quick tap (&lt; 0.3s). Cmd+Shift, Ctrl+C — all your shortcuts still work perfectly.',
     how_headline: 'How It Works',
     step1_title: 'Map Your Keys',
-    step1_desc: 'Open LangKey from the menu bar. Assign each modifier key (up to 4) to an input language.',
+    step1_desc: 'Open LangKey from the menu bar. Assign input sources to 8 built-in modifier keys, or add custom key mappings.',
     step2_title: 'Tap to Switch',
     step2_desc: 'Tap the modifier key for the language you need. A brief overlay confirms which language you\'re now in.',
     step3_title: 'Type Confidently',
@@ -1540,7 +1540,7 @@ const i18n = {
     download_sub: 'LangKey is now available to try for free. Download the macOS app and start using dedicated language keys.',
     price_req: 'Requires macOS 14.0 or later · Accessibility permission required',
     footer_tagline: 'A macOS utility for multilingual typists.',
-    footer_copy: '© 2025 LangKey',
+    footer_copy: '© 2026 StellarLab',
   },
   ko: {
     title: 'LangKey — 언제나 원하는 언어로 입력하세요.',
@@ -1561,8 +1561,8 @@ const i18n = {
     prob_switching: '언어 전환 중...',
     prob_toggle: '현재 입력 언어를 확인하지 못한 채 타이핑을 시작합니다. 잘못 입력된 것을 보고 지운 뒤, 언어를 바꾸고 다시 입력합니다. 매번 반복됩니다.',
     feat_headline: '키 하나에 언어 하나. 항상 그대로.',
-    feat1_title: '최대 4개 언어',
-    feat1_desc: '왼쪽 ⇧, 오른쪽 ⇧, 왼쪽 ⌃, 오른쪽 ⌃에 원하는 입력 소스를 각각 지정하세요.',
+    feat1_title: '기본 8개 키 매핑',
+    feat1_desc: 'Shift, Control, Option, Command의 좌우 8개 키에 더해 최대 10개의 커스텀 키 매핑을 추가할 수 있습니다.',
     feat2_title: '반복 전환 없이',
     feat2_desc: '각 키는 하나의 언어만 담당합니다. 오른쪽 ⇧는 언제나 한국어입니다. 현재 언어를 추측할 필요가 없습니다.',
     feat3_title: '즉시 보이는 전환 상태',
@@ -1571,7 +1571,7 @@ const i18n = {
     feat4_desc: '다른 키와 조합하지 않은 빠른 탭(0.3초 미만)에만 반응합니다. Cmd+Shift, Ctrl+C 같은 기존 단축키는 그대로 사용할 수 있습니다.',
     how_headline: '작동 방식',
     step1_title: '키에 언어 지정',
-    step1_desc: '메뉴 막대에서 LangKey를 열고 각 보조 키(최대 4개)에 입력 언어를 지정하세요.',
+    step1_desc: '메뉴 막대에서 LangKey를 열고 기본 8개 보조 키에 입력 소스를 지정하거나 커스텀 키 매핑을 추가하세요.',
     step2_title: '탭으로 전환',
     step2_desc: '필요한 언어가 지정된 보조 키를 가볍게 탭하세요. 잠깐 나타나는 오버레이로 전환된 언어를 확인할 수 있습니다.',
     step3_title: '안심하고 입력',
@@ -1582,7 +1582,7 @@ const i18n = {
     download_sub: 'LangKey를 이제 무료로 체험할 수 있습니다. macOS 앱을 다운로드하고 언어별 전용 키를 사용해 보세요.',
     price_req: 'macOS 14.0 이상 필요 · 손쉬운 사용 권한 필요',
     footer_tagline: '다국어 사용자를 위한 macOS 유틸리티.',
-    footer_copy: '© 2025 LangKey',
+    footer_copy: '© 2026 StellarLab',
   },
   ja: {
     title: 'LangKey — いつでも使いたい言語で入力。',
@@ -1603,8 +1603,8 @@ const i18n = {
     prob_switching: '言語切り替え中...',
     prob_toggle: '現在の入力言語が分からないまま入力を始めてしまう。間違いに気づいたら削除し、言語を切り替えて、また入力し直す。その繰り返しです。',
     feat_headline: '1つのキーに、1つの言語を。',
-    feat1_title: '最大4言語',
-    feat1_desc: '左⇧、右⇧、左⌃、右⌃に、好きな入力ソースをそれぞれ割り当てられます。',
+    feat1_title: '標準8キーに対応',
+    feat1_desc: '左右のShift、Control、Option、Commandに加え、最大10個のカスタムキー割り当ても追加できます。',
     feat2_title: '循環切り替えなし',
     feat2_desc: '各キーは特定の言語専用です。右⇧はいつでも日本語。今どの言語かを推測する必要はありません。',
     feat3_title: '切り替えがすぐ分かる',
@@ -1613,7 +1613,7 @@ const i18n = {
     feat4_desc: 'ほかのキーと組み合わせない短いタップ（0.3秒未満）にだけ反応します。Cmd+ShiftやCtrl+Cなど、いつものショートカットはそのまま使えます。',
     how_headline: '仕組み',
     step1_title: 'キーに言語を設定',
-    step1_desc: 'メニューバーからLangKeyを開き、各修飾キー（最大4つ）に入力言語を割り当てます。',
+    step1_desc: 'メニューバーからLangKeyを開き、8つの標準修飾キーに入力ソースを割り当てるか、カスタムキー割り当てを追加します。',
     step2_title: 'タップで切り替え',
     step2_desc: '使いたい言語に対応する修飾キーをタップします。短く表示されるオーバーレイで、切り替え先を確認できます。',
     step3_title: '安心して入力',
@@ -1624,7 +1624,7 @@ const i18n = {
     download_sub: 'LangKeyを無料で試用できるようになりました。macOSアプリをダウンロードして、言語専用キーを使い始めましょう。',
     price_req: 'macOS 14.0以降が必要 · アクセシビリティ権限が必要',
     footer_tagline: '多言語ユーザーのためのmacOSユーティリティ。',
-    footer_copy: '© 2025 LangKey',
+    footer_copy: '© 2026 StellarLab',
   },
   'zh-hans': {
     title: 'LangKey — 每次都用想要的语言输入。',
@@ -1645,8 +1645,8 @@ const i18n = {
     prob_switching: '切换语言中...',
     prob_toggle: '还没确认当前输入语言，就已经开始打字。发现不对后，只能删除、切换语言，再重新输入。这样的步骤总是一再发生。',
     feat_headline: '一个键，对应一种语言。',
-    feat1_title: '最多4种语言',
-    feat1_desc: '可将左⇧、右⇧、左⌃、右⌃分别绑定到不同输入源。',
+    feat1_title: '8个内置按键',
+    feat1_desc: '可绑定左右 Shift、Control、Option、Command，并可再添加最多10个自定义按键映射。',
     feat2_title: '不用反复切换',
     feat2_desc: '每个键只负责一种语言。右⇧始终是中文，不必再猜当前会切到哪里。',
     feat3_title: '切换状态一目了然',
@@ -1655,7 +1655,7 @@ const i18n = {
     feat4_desc: '只响应未与其他按键组合的快速轻点（&lt; 0.3 秒）。Cmd+Shift、Ctrl+C 等常用快捷键仍可照常使用。',
     how_headline: '使用方式',
     step1_title: '为按键绑定语言',
-    step1_desc: '从菜单栏打开 LangKey，为每个修饰键（最多4个）设置对应的输入语言。',
+    step1_desc: '从菜单栏打开 LangKey，为8个内置修饰键设置输入源，或添加自定义按键映射。',
     step2_title: '轻点即可切换',
     step2_desc: '轻点对应语言的修饰键。短暂出现的浮层会确认已切换到哪种语言。',
     step3_title: '安心输入',
@@ -1666,7 +1666,7 @@ const i18n = {
     download_sub: 'LangKey 现已可免费试用。下载 macOS 应用，开始使用专属语言按键。',
     price_req: '需要 macOS 14.0 或更高版本 · 需要辅助功能权限',
     footer_tagline: '面向多语言用户的 macOS 工具。',
-    footer_copy: '© 2025 LangKey',
+    footer_copy: '© 2026 StellarLab',
   },
   'zh-hant': {
     title: 'LangKey — 每次都用想要的語言輸入。',
@@ -1687,8 +1687,8 @@ const i18n = {
     prob_switching: '切換語言中...',
     prob_toggle: '還沒確認目前的輸入語言，就已經開始打字。發現不對後，只能刪掉、切換語言，再重新輸入。這樣的步驟總是一再發生。',
     feat_headline: '一個鍵，對應一種語言。',
-    feat1_title: '最多4種語言',
-    feat1_desc: '可將左⇧、右⇧、左⌃、右⌃分別綁定到不同輸入來源。',
+    feat1_title: '8個內建按鍵',
+    feat1_desc: '可綁定左右 Shift、Control、Option、Command，並可再新增最多10個自訂按鍵映射。',
     feat2_title: '不用反覆切換',
     feat2_desc: '每個鍵只負責一種語言。右⇧始終是中文，不必再猜目前會切到哪裡。',
     feat3_title: '切換狀態一目了然',
@@ -1697,7 +1697,7 @@ const i18n = {
     feat4_desc: '只回應未與其他按鍵組合的快速輕點（&lt; 0.3 秒）。Cmd+Shift、Ctrl+C 等常用快捷鍵仍可照常使用。',
     how_headline: '使用方式',
     step1_title: '為按鍵綁定語言',
-    step1_desc: '從選單列開啟 LangKey，為每個修飾鍵（最多4個）設定對應的輸入語言。',
+    step1_desc: '從選單列開啟 LangKey，為8個內建修飾鍵設定輸入來源，或新增自訂按鍵映射。',
     step2_title: '輕點即可切換',
     step2_desc: '輕點對應語言的修飾鍵。短暫出現的浮層會確認已切換到哪種語言。',
     step3_title: '安心輸入',
@@ -1708,7 +1708,7 @@ const i18n = {
     download_sub: 'LangKey 現已可免費試用。下載 macOS App，開始使用專屬語言按鍵。',
     price_req: '需要 macOS 14.0 或更新版本 · 需要輔助使用權限',
     footer_tagline: '面向多語言使用者的 macOS 工具。',
-    footer_copy: '© 2025 LangKey',
+    footer_copy: '© 2026 StellarLab',
   },
 };
 
@@ -1740,9 +1740,9 @@ const langMeta = {
 };
 
 Object.assign(i18n, {
-  es: { title: 'LangKey — Escribe siempre en el idioma correcto.', nav_coming_soon: 'Próximamente', hero_headline: 'Escribe siempre<br><em>en el idioma correcto.</em>', hero_sub: 'LangKey asigna un idioma a cada tecla modificadora para evitar cambios repetidos y errores de idioma.', hero_cta2: 'Ver cómo funciona', hero_badge: 'macOS 14+ · Próximamente', prob_label: 'El problema', prob_headline: '¿Te suena familiar?', prob_without: 'Sin LangKey', prob_with: 'Con LangKey', prob_intended: 'Querías escribir:', prob_typed: 'Lo que sale:', prob_switching: 'cambiando idioma...', prob_toggle: 'Empiezas a escribir sin saber el idioma activo. Te das cuenta, borras, cambias y vuelves a escribir.', feat_headline: 'Una tecla. Un idioma. Siempre.', feat1_title: 'Hasta 4 idiomas', feat1_desc: 'Asigna ⇧ izquierda, ⇧ derecha, ⌃ izquierda y ⌃ derecha a distintas fuentes de entrada.', feat2_title: 'Sin alternar a ciegas', feat2_desc: 'Cada tecla tiene un idioma fijo. No hay que adivinar dónde caerá el siguiente cambio.', feat3_title: 'Confirmación visual inmediata', feat3_desc: 'Una pequeña superposición muestra la bandera y el idioma cada vez que cambias.', feat4_title: 'Tus atajos siguen funcionando', feat4_desc: 'Solo responde a un toque rápido sin combinar teclas (&lt; 0,3 s). Cmd+Shift y Ctrl+C siguen igual.', how_headline: 'Cómo funciona', step1_title: 'Asigna tus teclas', step1_desc: 'Abre LangKey desde la barra de menús y asigna un idioma a cada tecla modificadora.', step2_title: 'Toca para cambiar', step2_desc: 'Toca la tecla del idioma que necesitas. La superposición confirma el idioma activo.', step3_title: 'Escribe con confianza', step3_desc: 'Sabes exactamente en qué idioma estás escribiendo.', coming_headline: 'Próximamente', coming_sub: 'LangKey está en la fase final antes del lanzamiento. Podrás probarlo gratis.', price_req: 'Requiere macOS 14.0 o posterior · Permiso de accesibilidad requerido', footer_tagline: 'Una utilidad de macOS para escribir en varios idiomas.' },
-  fr: { title: 'LangKey — Tapez toujours dans la bonne langue.', nav_coming_soon: 'Bientôt disponible', hero_headline: 'Tapez toujours<br><em>dans la bonne langue.</em>', hero_sub: 'LangKey attribue une langue à chaque touche modificatrice pour éviter les bascules répétées et les erreurs de langue.', hero_cta2: 'Voir le fonctionnement', hero_badge: 'macOS 14+ · Bientôt disponible', prob_label: 'Le problème', prob_headline: 'Ça vous arrive aussi ?', prob_without: 'Sans LangKey', prob_with: 'Avec LangKey', prob_intended: 'Vous vouliez écrire :', prob_typed: 'Résultat :', prob_switching: 'changement de langue...', prob_toggle: 'Vous commencez à taper sans connaître la langue active. Vous effacez, changez de langue, puis recommencez.', feat_headline: 'Une touche. Une langue. Toujours.', feat1_title: 'Jusqu’à 4 langues', feat1_desc: 'Associez ⇧ gauche, ⇧ droite, ⌃ gauche et ⌃ droite à des sources de saisie.', feat2_title: 'Plus de bascule au hasard', feat2_desc: 'Chaque touche garde sa langue. Plus besoin de deviner.', feat3_title: 'Retour visuel instantané', feat3_desc: 'Une brève pastille affiche le drapeau et le nom de la langue.', feat4_title: 'Vos raccourcis restent intacts', feat4_desc: 'Réagit seulement à une pression rapide non combinée (&lt; 0,3 s).', how_headline: 'Fonctionnement', step1_title: 'Associez les touches', step1_desc: 'Ouvrez LangKey depuis la barre de menus et attribuez une langue à chaque touche.', step2_title: 'Touchez pour changer', step2_desc: 'Touchez la touche de la langue voulue. La pastille confirme la langue active.', step3_title: 'Tapez sereinement', step3_desc: 'Vous savez toujours dans quelle langue vous tapez.', coming_headline: 'Bientôt disponible', coming_sub: 'LangKey est en préparation finale avant son lancement.', price_req: 'Nécessite macOS 14.0 ou ultérieur · Autorisation Accessibilité requise', footer_tagline: 'Un utilitaire macOS pour les personnes multilingues.' },
-  de: { title: 'LangKey — Immer in der richtigen Sprache tippen.', nav_coming_soon: 'Demnächst', hero_headline: 'Immer in der<br><em>richtigen Sprache tippen.</em>', hero_sub: 'LangKey weist jeder Modifikatortaste eine Eingabesprache zu und verhindert ständiges Umschalten.', hero_cta2: 'So funktioniert es', hero_badge: 'macOS 14+ · Demnächst', prob_label: 'Das Problem', prob_headline: 'Kommt Ihnen das bekannt vor?', prob_without: 'Ohne LangKey', prob_with: 'Mit LangKey', prob_intended: 'Gewollt:', prob_typed: 'Eingegeben:', prob_switching: 'Sprache wechseln...', prob_toggle: 'Sie tippen los, merken die falsche Sprache, löschen, schalten um und tippen erneut.', feat_headline: 'Eine Taste. Eine Sprache. Immer.', feat1_title: 'Bis zu 4 Sprachen', feat1_desc: 'Ordnen Sie linker/rechter ⇧ und linker/rechter ⌃ eigene Eingabequellen zu.', feat2_title: 'Kein Durchschalten mehr', feat2_desc: 'Jede Taste bleibt fest zugewiesen. Kein Raten mehr.', feat3_title: 'Sofort sichtbare Rückmeldung', feat3_desc: 'Ein kurzes Overlay zeigt Flagge und Sprachname beim Wechsel.', feat4_title: 'Shortcuts bleiben erhalten', feat4_desc: 'Reagiert nur auf kurzes Antippen ohne Tastenkombination (&lt; 0,3 s).', how_headline: 'So funktioniert es', step1_title: 'Tasten zuweisen', step1_desc: 'Öffnen Sie LangKey in der Menüleiste und weisen Sie jeder Taste eine Sprache zu.', step2_title: 'Antippen zum Wechseln', step2_desc: 'Tippen Sie die Taste der gewünschten Sprache an.', step3_title: 'Sicher tippen', step3_desc: 'Sie wissen genau, welche Eingabesprache aktiv ist.', coming_headline: 'Demnächst', coming_sub: 'LangKey befindet sich in der finalen Vorbereitung.', price_req: 'Erfordert macOS 14.0 oder neuer · Bedienungshilfen-Berechtigung erforderlich', footer_tagline: 'Ein macOS-Dienstprogramm für mehrsprachiges Tippen.' },
+  es: { title: 'LangKey — Escribe siempre en el idioma correcto.', nav_coming_soon: 'Próximamente', hero_headline: 'Escribe siempre<br><em>en el idioma correcto.</em>', hero_sub: 'LangKey asigna un idioma a cada tecla modificadora para evitar cambios repetidos y errores de idioma.', hero_cta2: 'Ver cómo funciona', hero_badge: 'macOS 14+ · Próximamente', prob_label: 'El problema', prob_headline: '¿Te suena familiar?', prob_without: 'Sin LangKey', prob_with: 'Con LangKey', prob_intended: 'Querías escribir:', prob_typed: 'Lo que sale:', prob_switching: 'cambiando idioma...', prob_toggle: 'Empiezas a escribir sin saber el idioma activo. Te das cuenta, borras, cambias y vuelves a escribir.', feat_headline: 'Una tecla. Un idioma. Siempre.', feat1_title: '8 teclas integradas', feat1_desc: 'Asigna ambos lados de Shift, Control, Option y Command, y añade hasta 10 asignaciones personalizadas.', feat2_title: 'Sin alternar a ciegas', feat2_desc: 'Cada tecla tiene un idioma fijo. No hay que adivinar dónde caerá el siguiente cambio.', feat3_title: 'Confirmación visual inmediata', feat3_desc: 'Una pequeña superposición muestra la bandera y el idioma cada vez que cambias.', feat4_title: 'Tus atajos siguen funcionando', feat4_desc: 'Solo responde a un toque rápido sin combinar teclas (&lt; 0,3 s). Cmd+Shift y Ctrl+C siguen igual.', how_headline: 'Cómo funciona', step1_title: 'Asigna tus teclas', step1_desc: 'Abre LangKey desde la barra de menús y asigna un idioma a cada tecla modificadora.', step2_title: 'Toca para cambiar', step2_desc: 'Toca la tecla del idioma que necesitas. La superposición confirma el idioma activo.', step3_title: 'Escribe con confianza', step3_desc: 'Sabes exactamente en qué idioma estás escribiendo.', coming_headline: 'Próximamente', coming_sub: 'LangKey está en la fase final antes del lanzamiento. Podrás probarlo gratis.', price_req: 'Requiere macOS 14.0 o posterior · Permiso de accesibilidad requerido', footer_tagline: 'Una utilidad de macOS para escribir en varios idiomas.' },
+  fr: { title: 'LangKey — Tapez toujours dans la bonne langue.', nav_coming_soon: 'Bientôt disponible', hero_headline: 'Tapez toujours<br><em>dans la bonne langue.</em>', hero_sub: 'LangKey attribue une langue à chaque touche modificatrice pour éviter les bascules répétées et les erreurs de langue.', hero_cta2: 'Voir le fonctionnement', hero_badge: 'macOS 14+ · Bientôt disponible', prob_label: 'Le problème', prob_headline: 'Ça vous arrive aussi ?', prob_without: 'Sans LangKey', prob_with: 'Avec LangKey', prob_intended: 'Vous vouliez écrire :', prob_typed: 'Résultat :', prob_switching: 'changement de langue...', prob_toggle: 'Vous commencez à taper sans connaître la langue active. Vous effacez, changez de langue, puis recommencez.', feat_headline: 'Une touche. Une langue. Toujours.', feat1_title: '8 touches intégrées', feat1_desc: 'Associez les deux Shift, Control, Option et Command, puis ajoutez jusqu’à 10 raccourcis personnalisés.', feat2_title: 'Plus de bascule au hasard', feat2_desc: 'Chaque touche garde sa langue. Plus besoin de deviner.', feat3_title: 'Retour visuel instantané', feat3_desc: 'Une brève pastille affiche le drapeau et le nom de la langue.', feat4_title: 'Vos raccourcis restent intacts', feat4_desc: 'Réagit seulement à une pression rapide non combinée (&lt; 0,3 s).', how_headline: 'Fonctionnement', step1_title: 'Associez les touches', step1_desc: 'Ouvrez LangKey depuis la barre de menus et attribuez une langue à chaque touche.', step2_title: 'Touchez pour changer', step2_desc: 'Touchez la touche de la langue voulue. La pastille confirme la langue active.', step3_title: 'Tapez sereinement', step3_desc: 'Vous savez toujours dans quelle langue vous tapez.', coming_headline: 'Bientôt disponible', coming_sub: 'LangKey est en préparation finale avant son lancement.', price_req: 'Nécessite macOS 14.0 ou ultérieur · Autorisation Accessibilité requise', footer_tagline: 'Un utilitaire macOS pour les personnes multilingues.' },
+  de: { title: 'LangKey — Immer in der richtigen Sprache tippen.', nav_coming_soon: 'Demnächst', hero_headline: 'Immer in der<br><em>richtigen Sprache tippen.</em>', hero_sub: 'LangKey weist jeder Modifikatortaste eine Eingabesprache zu und verhindert ständiges Umschalten.', hero_cta2: 'So funktioniert es', hero_badge: 'macOS 14+ · Demnächst', prob_label: 'Das Problem', prob_headline: 'Kommt Ihnen das bekannt vor?', prob_without: 'Ohne LangKey', prob_with: 'Mit LangKey', prob_intended: 'Gewollt:', prob_typed: 'Eingegeben:', prob_switching: 'Sprache wechseln...', prob_toggle: 'Sie tippen los, merken die falsche Sprache, löschen, schalten um und tippen erneut.', feat_headline: 'Eine Taste. Eine Sprache. Immer.', feat1_title: '8 integrierte Tasten', feat1_desc: 'Belegen Sie Shift, Control, Option und Command auf beiden Seiten und fügen Sie bis zu 10 eigene Tastenzuordnungen hinzu.', feat2_title: 'Kein Durchschalten mehr', feat2_desc: 'Jede Taste bleibt fest zugewiesen. Kein Raten mehr.', feat3_title: 'Sofort sichtbare Rückmeldung', feat3_desc: 'Ein kurzes Overlay zeigt Flagge und Sprachname beim Wechsel.', feat4_title: 'Shortcuts bleiben erhalten', feat4_desc: 'Reagiert nur auf kurzes Antippen ohne Tastenkombination (&lt; 0,3 s).', how_headline: 'So funktioniert es', step1_title: 'Tasten zuweisen', step1_desc: 'Öffnen Sie LangKey in der Menüleiste und weisen Sie jeder Taste eine Sprache zu.', step2_title: 'Antippen zum Wechseln', step2_desc: 'Tippen Sie die Taste der gewünschten Sprache an.', step3_title: 'Sicher tippen', step3_desc: 'Sie wissen genau, welche Eingabesprache aktiv ist.', coming_headline: 'Demnächst', coming_sub: 'LangKey befindet sich in der finalen Vorbereitung.', price_req: 'Erfordert macOS 14.0 oder neuer · Bedienungshilfen-Berechtigung erforderlich', footer_tagline: 'Ein macOS-Dienstprogramm für mehrsprachiges Tippen.' },
   it: { title: 'LangKey — Scrivi sempre nella lingua giusta.', nav_coming_soon: 'In arrivo', hero_headline: 'Scrivi sempre<br><em>nella lingua giusta.</em>', hero_sub: 'LangKey assegna una lingua a ogni tasto modificatore, riducendo cambi ripetuti ed errori.', hero_cta2: 'Scopri come funziona', hero_badge: 'macOS 14+ · In arrivo', prob_label: 'Il problema', prob_headline: 'Ti è mai capitato?', prob_without: 'Senza LangKey', prob_with: 'Con LangKey', prob_intended: 'Volevi scrivere:', prob_typed: 'Risultato:', prob_switching: 'cambio lingua...', prob_toggle: 'Inizi a scrivere senza sapere la lingua attiva. Cancelli, cambi lingua e ricominci.', feat_headline: 'Un tasto. Una lingua. Sempre.', how_headline: 'Come funziona', step1_title: 'Associa i tasti', step1_desc: 'Apri LangKey dalla barra dei menu e assegna una lingua a ogni tasto.', step2_title: 'Tocca per cambiare', step2_desc: 'Tocca il tasto della lingua che ti serve.', step3_title: 'Scrivi con sicurezza', step3_desc: 'Sai sempre in quale lingua stai scrivendo.', coming_headline: 'In arrivo', coming_sub: 'LangKey è in preparazione finale per il lancio.', price_req: 'Richiede macOS 14.0 o successivo · Permesso Accessibilità richiesto', footer_tagline: 'Una utility macOS per chi scrive in più lingue.' },
   'pt-br': { title: 'LangKey — Digite sempre no idioma certo.', nav_coming_soon: 'Em breve', hero_headline: 'Digite sempre<br><em>no idioma certo.</em>', hero_sub: 'LangKey dá um idioma a cada tecla modificadora para evitar alternâncias e erros.', hero_cta2: 'Ver como funciona', hero_badge: 'macOS 14+ · Em breve', prob_label: 'O problema', prob_headline: 'Isso parece familiar?', prob_without: 'Sem LangKey', prob_with: 'Com LangKey', prob_intended: 'Você queria:', prob_typed: 'Saiu assim:', prob_switching: 'trocando idioma...', prob_toggle: 'Você começa a digitar sem saber o idioma ativo, apaga, troca e digita de novo.', feat_headline: 'Uma tecla. Um idioma. Sempre.', how_headline: 'Como funciona', step1_title: 'Mapeie suas teclas', step1_desc: 'Abra o LangKey na barra de menus e atribua um idioma a cada tecla.', step2_title: 'Toque para trocar', step2_desc: 'Toque na tecla do idioma necessário.', step3_title: 'Digite com confiança', step3_desc: 'Você sabe exatamente qual idioma está ativo.', coming_headline: 'Em breve', coming_sub: 'LangKey está nos ajustes finais para o lançamento.', price_req: 'Requer macOS 14.0 ou posterior · Permissão de Acessibilidade necessária', footer_tagline: 'Um utilitário macOS para quem digita em vários idiomas.' },
   'pt-pt': { title: 'LangKey — Escreva sempre no idioma certo.', nav_coming_soon: 'Brevemente', hero_headline: 'Escreva sempre<br><em>no idioma certo.</em>', hero_sub: 'LangKey atribui um idioma a cada tecla modificadora para evitar trocas repetidas.', hero_cta2: 'Ver como funciona', hero_badge: 'macOS 14+ · Brevemente', prob_label: 'O problema', prob_headline: 'Isto acontece-lhe?', prob_without: 'Sem LangKey', prob_with: 'Com LangKey', prob_intended: 'Queria escrever:', prob_typed: 'Saiu assim:', prob_switching: 'a mudar idioma...', prob_toggle: 'Começa a escrever sem saber o idioma activo, apaga, muda e escreve novamente.', feat_headline: 'Uma tecla. Um idioma. Sempre.', how_headline: 'Como funciona', step1_title: 'Atribua as teclas', step1_desc: 'Abra o LangKey na barra de menus e atribua um idioma a cada tecla.', step2_title: 'Toque para mudar', step2_desc: 'Toque na tecla do idioma de que precisa.', step3_title: 'Escreva com confiança', step3_desc: 'Sabe sempre que idioma está activo.', coming_headline: 'Brevemente', coming_sub: 'LangKey está na preparação final para lançamento.', price_req: 'Requer macOS 14.0 ou posterior · Permissão de Acessibilidade necessária', footer_tagline: 'Um utilitário macOS para utilizadores multilingues.' },
